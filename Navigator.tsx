@@ -14,7 +14,7 @@ import MonthExpenses from "./screens/MonthExpenses";
 import YearExpenses from "./screens/YearExpenses";
 
 // Estilos
-import { globalStyles, palette } from "./styles/global";
+import { globalStyles, palette } from "./global/styles";
 
 type IconName =
   | "time"

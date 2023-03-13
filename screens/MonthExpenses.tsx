@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 
 // Estilos
-import { globalStyles } from "../styles/global";
+import { globalStyles } from "../global/styles";
 
 export default function MonthExpenses() {
   return (
