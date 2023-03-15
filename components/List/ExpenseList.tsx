@@ -4,6 +4,10 @@ import React from "react";
 // Tipos
 import Expense from "../../global/types";
 
+// Data
+import format from "date-fns/format";
+
+// Estilos
 import { palette } from "../../global/styles";
 
 export default function ExpenseList({
@@ -18,13 +22,13 @@ export default function ExpenseList({
     <SectionList
       style={styles.section}
       sections={expenses}
-      renderItem={({ item }) => (
-        <View style={styles.item}>
+      renderItem={({ item, index }) => (
+        <View style={[styles.item, index === 0 && styles.firstItem]}>
           <View style={styles.leftView}>
             <Text style={styles.title}>{item.title}</Text>
           </View>
           <View style={styles.priceBox}>
-            <Text style={styles.priceText}>{item.amount}</Text>
+            <Text style={styles.priceText}>{`R$ ${item.amount}`}</Text>
           </View>
         </View>
       )}
@@ -41,28 +45,38 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 20,
   },
+  firstItem: {
+    marginTop: 5,
+  },
   item: {
     backgroundColor: palette.primary.lighter,
-    padding: 2,
-    marginVertical: 3,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginTop: 5,
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
+    alignItems: "center",
   },
   header: {
-    fontSize: 24,
+    fontSize: 20,
     backgroundColor: palette.secondary.main,
-    marginVertical: 5,
+    marginTop: 10,
     fontWeight: "bold",
     padding: 1,
     textAlign: "center",
+    textTransform: "capitalize",
   },
   title: {
     fontSize: 20,
   },
-  priceBox: {},
+  priceBox: {
+    backgroundColor: palette.primary.darker,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
   priceText: {
     fontSize: 20,
+    color: "white",
   },
   leftView: {},
 });

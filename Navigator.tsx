@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 
 // Navigators
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Ícones
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -14,7 +15,8 @@ import MonthExpenses from "./screens/MonthExpenses";
 import YearExpenses from "./screens/YearExpenses";
 
 // Estilos
-import { globalStyles, palette } from "./global/styles";
+import { palette } from "./global/styles";
+import NewExpense from "./screens/NewExpense";
 
 type IconName =
   | "time"
@@ -26,71 +28,100 @@ type IconName =
   | undefined;
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function TabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: palette.primary.dark,
+          borderTopWidth: 0.5,
+          borderTopColor: palette.white,
+        },
+        tabBarActiveTintColor: palette.secondary.main,
+        tabBarInactiveTintColor: palette.white,
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: IconName;
+
+          if (route.name === "WeekExpenses") {
+            iconName = focused ? "time" : "time-outline";
+          }
+
+          if (route.name === "MonthExpenses") {
+            iconName = focused ? "calendar" : "calendar-outline";
+          }
+
+          if (route.name === "YearExpenses") {
+            iconName = focused ? "sunny" : "sunny-outline";
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+    >
+      <Tab.Screen
+        name='WeekExpenses'
+        component={WeekExpenses}
+        options={{
+          title: "Semana",
+        }}
+      />
+      <Tab.Screen
+        name='MonthExpenses'
+        component={MonthExpenses}
+        options={{
+          title: "Mês",
+        }}
+      />
+      <Tab.Screen
+        name='YearExpenses'
+        component={YearExpenses}
+        options={{
+          title: "Ano",
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 
 export default function Navigator() {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          headerTitle:
-            (route.name === "WeekExpenses" && "Despesas Semanais") ||
-            (route.name === "MonthExpenses" && "Despesas Mensais") ||
-            (route.name === "YearExpenses" && "Despesas Anuais") ||
-            "",
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: palette.primary.dark,
-            borderBottomWidth: 0.5,
-            borderBottomColor: palette.white,
-          },
-          tabBarStyle: {
-            backgroundColor: palette.primary.dark,
-            borderTopWidth: 0.5,
-            borderTopColor: palette.white,
-          },
-          tabBarActiveTintColor: palette.secondary.main,
-          tabBarInactiveTintColor: palette.white,
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName: IconName;
+      <Stack.Navigator
+        screenOptions={({ route, navigation }) => {
+          console.log(route);
+          return {
+            headerTitle:
+              (route.name === "WeekExpenses" && "Despesas Semanais") ||
+              (route.name === "MonthExpenses" && "Despesas Mensais") ||
+              (route.name === "YearExpenses" && "Despesas Anuais") ||
+              "",
 
-            if (route.name === "WeekExpenses") {
-              iconName = focused ? "time" : "time-outline";
-            }
+            headerTitleAlign: "center",
+            headerStyle: {
+              backgroundColor: palette.primary.dark,
+              borderBottomWidth: 0.5,
+              borderBottomColor: palette.white,
+            },
 
-            if (route.name === "MonthExpenses") {
-              iconName = focused ? "calendar" : "calendar-outline";
-            }
-
-            if (route.name === "YearExpenses") {
-              iconName = focused ? "sunny" : "sunny-outline";
-            }
-
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
+            headerRight: () => (
+              <Pressable onPress={() => navigation.navigate("NewExpense")}>
+                <Ionicons
+                  name='settings'
+                  size={24}
+                  color='black'
+                  style={{ marginRight: 20 }}
+                />
+              </Pressable>
+            ),
+          };
+        }}
       >
-        <Tab.Screen
-          name='WeekExpenses'
-          component={WeekExpenses}
-          options={{
-            title: "Semana",
-          }}
-        />
-        <Tab.Screen
-          name='MonthExpenses'
-          component={MonthExpenses}
-          options={{
-            title: "Mês",
-          }}
-        />
-        <Tab.Screen
-          name='YearExpenses'
-          component={YearExpenses}
-          options={{
-            title: "Ano",
-          }}
-        />
-      </Tab.Navigator>
+        <Stack.Screen name='WeekExpenses' component={TabNavigator} />
+        <Stack.Screen name='NewExpense' component={NewExpense} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

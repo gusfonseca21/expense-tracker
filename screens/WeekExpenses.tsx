@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, FlatList } from "react-native";
+import { View } from "react-native";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -50,8 +50,13 @@ const expenses: Expense[] = [
 ];
 
 export default function WeekExpenses() {
-  const expensesByDayOfWeek = groupBy(expenses, (expense) =>
-    format(expense.date, "EEEE", { locale: ptBR })
+  const expensesByDayOfWeek = groupBy(
+    expenses,
+    (expense) =>
+      `${format(expense.date, "EEEE", { locale: ptBR })} - ${format(
+        expense.date,
+        "dd/MM"
+      )}`
   );
 
   const weekExpenses = Object.keys(expensesByDayOfWeek)
