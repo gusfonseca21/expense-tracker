@@ -1,4 +1,6 @@
-type Expense = {
+import getWeek from "date-fns/getWeek";
+
+export type Expense = {
   id: number;
   amount: number;
   date: Date;
@@ -6,9 +8,9 @@ type Expense = {
   description: string;
 };
 
-type ExpensesDividedByDay = {
+export type ExpensesDividedByDay = {
   title: string;
   data: Expense[];
 }[];
 
-export default Expense;
+export type GetWeekFunction = typeof getWeek;

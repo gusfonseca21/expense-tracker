@@ -90,36 +90,29 @@ export default function Navigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={({ route, navigation }) => {
-          console.log(route);
-          return {
-            headerTitle:
-              (route.name === "WeekExpenses" && "Despesas Semanais") ||
-              (route.name === "MonthExpenses" && "Despesas Mensais") ||
-              (route.name === "YearExpenses" && "Despesas Anuais") ||
-              "",
+        screenOptions={({ route, navigation }) => ({
+          headerTitle:
+            (route.name === "NewExpense" && "Nova Despesa") || "Despesas",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: palette.primary.dark,
+            borderBottomWidth: 0.5,
+            borderBottomColor: palette.white,
+          },
 
-            headerTitleAlign: "center",
-            headerStyle: {
-              backgroundColor: palette.primary.dark,
-              borderBottomWidth: 0.5,
-              borderBottomColor: palette.white,
-            },
-
-            headerRight: () => (
-              <Pressable onPress={() => navigation.navigate("NewExpense")}>
-                <Ionicons
-                  name='settings'
-                  size={24}
-                  color='black'
-                  style={{ marginRight: 20 }}
-                />
-              </Pressable>
-            ),
-          };
-        }}
+          headerRight: () => (
+            <Pressable onPress={() => navigation.navigate("NewExpense")}>
+              <Ionicons
+                name='settings'
+                size={24}
+                color='black'
+                style={{ marginRight: 20 }}
+              />
+            </Pressable>
+          ),
+        })}
       >
-        <Stack.Screen name='WeekExpenses' component={TabNavigator} />
+        <Stack.Screen name='Expenses' component={TabNavigator} />
         <Stack.Screen name='NewExpense' component={NewExpense} />
       </Stack.Navigator>
     </NavigationContainer>

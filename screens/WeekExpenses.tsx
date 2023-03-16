@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { format } from "date-fns";
+import { format, getWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 // Estilos
@@ -8,8 +8,9 @@ import { globalStyles } from "../global/styles";
 import { groupBy } from "lodash";
 
 // Tipos
-import Expense from "../global/types";
+import { Expense } from "../global/types";
 import ExpenseList from "../components/List/ExpenseList";
+// import filterAndGroupExpenses from "../helpers";
 
 const expenses: Expense[] = [
   {
@@ -47,11 +48,29 @@ const expenses: Expense[] = [
     title: "Corre",
     description: "Com o Cleitinho, em dinheiro",
   },
+  {
+    id: 6,
+    amount: 30.0,
+    date: new Date("2023-03-16"),
+    title: "Gilette",
+    description: "Com o Cleitinho, em dinheiro",
+  },
+  {
+    id: 7,
+    amount: 30.0,
+    date: new Date("2023-03-17"),
+    title: "Sete",
+    description: "Com o Cleitinho, em dinheiro",
+  },
 ];
 
 export default function WeekExpenses() {
+  const filteredExpenses = expenses.filter(
+    (expense) => getWeek(expense.date) === getWeek(new Date())
+  );
+
   const expensesByDayOfWeek = groupBy(
-    expenses,
+    filteredExpenses,
     (expense) =>
       `${format(expense.date, "EEEE", { locale: ptBR })} - ${format(
         expense.date,
