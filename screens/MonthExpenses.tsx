@@ -1,12 +1,11 @@
-import { format, getMonth, getWeek, getWeekOfMonth } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { groupBy } from "lodash";
-import { View, Text } from "react-native";
+import { getMonth, getWeekOfMonth } from "date-fns";
+import { View } from "react-native";
 import ExpenseList from "../components/List/ExpenseList";
 
 // Estilos
 import { globalStyles } from "../global/styles";
 import { Expense } from "../global/types";
+import { groupExpenses } from "../helpers";
 
 const expenses: Expense[] = [
   {
@@ -68,25 +67,14 @@ const expenses: Expense[] = [
 ];
 
 export default function MonthExpenses() {
-  const filteredExpenses = expenses.filter(
-    (expense) => getMonth(expense.date) === getMonth(new Date())
-  );
-
-  const groupedExpenses = groupBy(
-    filteredExpenses,
+  const monthExpenses = groupExpenses(
+    expenses,
+    getMonth,
     (expense) => `Semana ${getWeekOfMonth(expense.date)}`
   );
-
-  const finalExpenses = Object.keys(groupedExpenses)
-    .map((dayOfWeek) => ({
-      title: dayOfWeek,
-      data: groupedExpenses[dayOfWeek],
-    }))
-    .reverse();
-
   return (
     <View style={globalStyles.pageStyle}>
-      <ExpenseList expenses={finalExpenses} />
+      <ExpenseList expenses={monthExpenses} />
     </View>
   );
 }

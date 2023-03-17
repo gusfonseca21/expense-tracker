@@ -1,26 +1,22 @@
-// // Types
-// import { ptBR } from "date-fns/locale";
-// import { groupBy } from "lodash";
-// import { Expense, GetWeekFunction } from "./global/types";
+// Types
+import { groupBy } from "lodash";
+import { Expense, FilterFunctions } from "./global/types";
 
-// export default function filterAndGroupExpenses(
-//   expenses: Expense[],
-//   comparisonFunction: GetWeekFunction
-// ) {
-//   const filteredExpenses = expenses.filter(
-//     (expense) =>
-//       comparisonFunction(expense.date, { locale: ptBR }) ===
-//       comparisonFunction(new Date(), { locale: ptBR })
-//   );
+export function groupExpenses(
+  expenses: Expense[],
+  filterFunctions: FilterFunctions,
+  titleFunction: (expense: Expense) => string
+) {
+  const filteredExpenses = expenses
+    .filter(
+      (expense) => filterFunctions(expense.date) === filterFunctions(new Date())
+    )
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
 
-//   const expensesByDayOfWeek = groupBy(
-//     filteredExpenses,
-//     (expense) =>
-//       `${format(expense.date, "EEEE", { locale: ptBR })} - ${format(
-//         expense.date,
-//         "dd/MM"
-//       )}`
-//   );
+  const groupedExpenses = groupBy(filteredExpenses, titleFunction);
 
-//   return filteredExpenses;
-// }
+  return Object.keys(groupedExpenses).map((groupTitle) => ({
+    title: groupTitle,
+    data: groupedExpenses[groupTitle],
+  }));
+}

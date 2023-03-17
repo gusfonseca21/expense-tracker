@@ -1,11 +1,7 @@
 import { View, Text, SectionList, StyleSheet } from "react-native";
-import React from "react";
 
 // Tipos
-import Expense from "../../global/types";
-
-// Data
-import format from "date-fns/format";
+import { Expense } from "../../global/types";
 
 // Estilos
 import { palette } from "../../global/styles";
@@ -22,8 +18,9 @@ export default function ExpenseList({
     <SectionList
       style={styles.section}
       sections={expenses}
+      // ListHeaderComponent={<Text style={styles.header}>Total: R$ 230,00</Text>}
       renderItem={({ item, index }) => (
-        <View style={[styles.item, index === 0 && styles.firstItem]}>
+        <View style={styles.item}>
           <View style={styles.leftView}>
             <Text style={styles.title}>{item.title}</Text>
           </View>
@@ -45,22 +42,20 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 20,
   },
-  firstItem: {
-    marginTop: 5,
-  },
   item: {
     backgroundColor: palette.primary.lighter,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    marginTop: 5,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 5,
   },
   header: {
     fontSize: 20,
     backgroundColor: palette.secondary.main,
-    marginTop: 10,
+    marginTop: 5,
+    marginBottom: 5,
     fontWeight: "bold",
     padding: 1,
     textAlign: "center",

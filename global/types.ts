@@ -1,4 +1,4 @@
-import getWeek from "date-fns/getWeek";
+import { getWeek, getMonth, getYear } from "date-fns";
 
 export type Expense = {
   id: number;
@@ -13,4 +13,10 @@ export type ExpensesDividedByDay = {
   data: Expense[];
 }[];
 
-export type GetWeekFunction = typeof getWeek;
+type GetWeek = typeof getWeek;
+
+type GetMonth = typeof getMonth;
+
+type GetYear = typeof getYear;
+
+export type FilterFunctions = GetWeek | GetMonth | GetYear;

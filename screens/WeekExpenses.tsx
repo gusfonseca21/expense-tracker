@@ -5,12 +5,10 @@ import { ptBR } from "date-fns/locale";
 // Estilos
 import { globalStyles } from "../global/styles";
 
-import { groupBy } from "lodash";
-
 // Tipos
 import { Expense } from "../global/types";
 import ExpenseList from "../components/List/ExpenseList";
-// import filterAndGroupExpenses from "../helpers";
+import { groupExpenses } from "../helpers";
 
 const expenses: Expense[] = [
   {
@@ -65,25 +63,9 @@ const expenses: Expense[] = [
 ];
 
 export default function WeekExpenses() {
-  const filteredExpenses = expenses.filter(
-    (expense) => getWeek(expense.date) === getWeek(new Date())
+  const weekExpenses = groupExpenses(expenses, getWeek, (expense) =>
+    format(expense.date, "EEEE", { locale: ptBR })
   );
-
-  const expensesByDayOfWeek = groupBy(
-    filteredExpenses,
-    (expense) =>
-      `${format(expense.date, "EEEE", { locale: ptBR })} - ${format(
-        expense.date,
-        "dd/MM"
-      )}`
-  );
-
-  const weekExpenses = Object.keys(expensesByDayOfWeek)
-    .map((dayOfWeek) => ({
-      title: dayOfWeek,
-      data: expensesByDayOfWeek[dayOfWeek],
-    }))
-    .reverse();
 
   return (
     <View style={globalStyles.pageStyle}>
