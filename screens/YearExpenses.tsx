@@ -1,7 +1,7 @@
 import { format, getYear } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { View } from "react-native";
-import ExpenseList from "../components/List/ExpenseList";
+import ExpenseList from "../components/ExpenseList";
 
 // Estilos
 import { globalStyles } from "../global/styles";

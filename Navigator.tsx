@@ -1,5 +1,4 @@
-import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { Pressable } from "react-native";
 
 // Navigators
 import { NavigationContainer } from "@react-navigation/native";
@@ -18,6 +17,20 @@ import YearExpenses from "./screens/YearExpenses";
 import { palette } from "./global/styles";
 import NewExpense from "./screens/NewExpense";
 
+// Tipos
+import { NavigationProp, ParamListBase } from "@react-navigation/native";
+
+type HeaderOptions = {
+  headerTitleAlign: "center" | "left" | undefined;
+  headerStyle: {
+    backgroundColor: string;
+    borderBottomWidth: number;
+    borderBottomColor: string;
+  };
+};
+
+type Navigation = NavigationProp<ParamListBase>;
+
 type IconName =
   | "time"
   | "time-outline"
@@ -30,11 +43,32 @@ type IconName =
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+const headerOptions: HeaderOptions = {
+  headerTitleAlign: "center",
+  headerStyle: {
+    backgroundColor: palette.primary.dark,
+    borderBottomWidth: 0.5,
+    borderBottomColor: palette.white,
+  },
+};
+
+function addExpenseIcon(navigation: Navigation) {
+  return (
+    <Pressable onPress={() => navigation.navigate("NewExpense")}>
+      <Ionicons
+        name='add-outline'
+        size={38}
+        color='black'
+        style={{ marginRight: 20 }}
+      />
+    </Pressable>
+  );
+}
+
 function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerShown: false,
         tabBarStyle: {
           backgroundColor: palette.primary.dark,
           borderTopWidth: 0.5,
@@ -64,23 +98,32 @@ function TabNavigator() {
       <Tab.Screen
         name='WeekExpenses'
         component={WeekExpenses}
-        options={{
+        options={({ navigation }) => ({
+          ...headerOptions,
           title: "Semana",
-        }}
+          headerTitle: "Despesas semanais",
+          headerRight: () => addExpenseIcon(navigation),
+        })}
       />
       <Tab.Screen
         name='MonthExpenses'
         component={MonthExpenses}
-        options={{
+        options={({ navigation }) => ({
+          ...headerOptions,
           title: "Mês",
-        }}
+          headerTitle: "Despesas mensais",
+          headerRight: () => addExpenseIcon(navigation),
+        })}
       />
       <Tab.Screen
         name='YearExpenses'
         component={YearExpenses}
-        options={{
+        options={({ navigation }) => ({
+          ...headerOptions,
           title: "Ano",
-        }}
+          headerTitle: "Despesas anuais",
+          headerRight: () => addExpenseIcon(navigation),
+        })}
       />
     </Tab.Navigator>
   );
@@ -90,30 +133,17 @@ export default function Navigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={({ route, navigation }) => ({
-          headerTitle:
-            (route.name === "NewExpense" && "Nova Despesa") || "Despesas",
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: palette.primary.dark,
-            borderBottomWidth: 0.5,
-            borderBottomColor: palette.white,
-          },
-
-          headerRight: () => (
-            <Pressable onPress={() => navigation.navigate("NewExpense")}>
-              <Ionicons
-                name='settings'
-                size={24}
-                color='black'
-                style={{ marginRight: 20 }}
-              />
-            </Pressable>
-          ),
+        screenOptions={({ route }) => ({
+          headerShown: route.name === "NewExpense",
+          ...headerOptions,
         })}
       >
         <Stack.Screen name='Expenses' component={TabNavigator} />
-        <Stack.Screen name='NewExpense' component={NewExpense} />
+        <Stack.Screen
+          name='NewExpense'
+          component={NewExpense}
+          options={{ title: "Nova Despesa" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

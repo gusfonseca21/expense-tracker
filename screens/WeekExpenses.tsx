@@ -7,21 +7,21 @@ import { globalStyles } from "../global/styles";
 
 // Tipos
 import { Expense } from "../global/types";
-import ExpenseList from "../components/List/ExpenseList";
+import ExpenseList from "../components/ExpenseList";
 import { groupExpenses } from "../helpers";
 
 const expenses: Expense[] = [
   {
     id: 1,
     amount: 10.5,
-    date: new Date("2023-03-10"),
+    date: new Date("2023-01-10"),
     title: "Cachorro quente",
     description: "Pelo débito",
   },
   {
     id: 2,
     amount: 20.0,
-    date: new Date("2023-03-11"),
+    date: new Date("2023-02-02"),
     title: "Passagem de metrô",
     description: "Em dinheiro",
   },
@@ -48,16 +48,23 @@ const expenses: Expense[] = [
   },
   {
     id: 6,
-    amount: 30.0,
-    date: new Date("2023-03-16"),
-    title: "Gilette",
+    amount: 40.0,
+    date: new Date("2023-04-01"),
+    title: "Teste 1",
     description: "Com o Cleitinho, em dinheiro",
   },
   {
     id: 7,
-    amount: 30.0,
-    date: new Date("2023-03-17"),
-    title: "Sete",
+    amount: 50.0,
+    date: new Date("2023-04-08"),
+    title: "Teste 2",
+    description: "Com o Cleitinho, em dinheiro",
+  },
+  {
+    id: 8,
+    amount: 60.0,
+    date: new Date("2023-05-19"),
+    title: "Alabama",
     description: "Com o Cleitinho, em dinheiro",
   },
 ];

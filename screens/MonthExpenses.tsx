@@ -1,6 +1,6 @@
 import { getMonth, getWeekOfMonth } from "date-fns";
 import { View } from "react-native";
-import ExpenseList from "../components/List/ExpenseList";
+import ExpenseList from "../components/ExpenseList";
 
 // Estilos
 import { globalStyles } from "../global/styles";

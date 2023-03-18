@@ -1,10 +1,10 @@
 import { View, Text, SectionList, StyleSheet } from "react-native";
 
 // Tipos
-import { Expense } from "../../global/types";
+import { Expense } from "../global/types";
 
 // Estilos
-import { palette } from "../../global/styles";
+import { palette } from "../global/styles";
 
 export default function ExpenseList({
   expenses,
