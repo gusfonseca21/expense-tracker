@@ -1,7 +1,7 @@
 import { Pressable } from "react-native";
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 // Navigators
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -23,12 +23,14 @@ import { ExpensesContext } from "./context/ExpensesContext";
 import axios from "axios";
 import { Expense } from "./global/types";
 import { callToast } from "./helpers";
+import ExpenseDetails from "./screens/ExpenseDetails";
 
 type HeaderOptions = {
   headerTitleAlign: "center" | "left" | undefined;
   headerStyle: {
     backgroundColor: string;
   };
+  headerTintColor: string;
 };
 
 type Navigation = NavigationProp<ParamListBase>;
@@ -50,6 +52,7 @@ const headerOptions: HeaderOptions = {
   headerStyle: {
     backgroundColor: palette.primary.dark,
   },
+  headerTintColor: "#fff",
 };
 
 function addExpenseIcon(navigation: Navigation) {
@@ -58,7 +61,7 @@ function addExpenseIcon(navigation: Navigation) {
       <Ionicons
         name='add-outline'
         size={38}
-        color='black'
+        color='#fff'
         style={{ marginRight: 20 }}
       />
     </Pressable>
@@ -71,8 +74,6 @@ function TabNavigator() {
       screenOptions={({ route }) => ({
         tabBarStyle: {
           backgroundColor: palette.primary.dark,
-          borderTopWidth: 0.5,
-          borderTopColor: palette.white,
         },
         tabBarActiveTintColor: palette.secondary.main,
         tabBarInactiveTintColor: palette.white,
@@ -157,7 +158,8 @@ export default function Navigator() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={({ route }) => ({
-          headerShown: route.name === "NewExpense",
+          headerShown:
+            route.name === "NewExpense" || route.name === "ExpenseDetails",
           ...headerOptions,
         })}
       >
@@ -166,6 +168,11 @@ export default function Navigator() {
           name='NewExpense'
           component={NewExpense}
           options={{ title: "Nova Despesa" }}
+        />
+        <Stack.Screen
+          name='ExpenseDetails'
+          component={ExpenseDetails}
+          options={{ title: "Detalhes da despesa" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

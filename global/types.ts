@@ -20,3 +20,12 @@ type GetMonth = typeof getMonth;
 type GetYear = typeof getYear;
 
 export type FilterFunctions = GetWeek | GetMonth | GetYear;
+
+export type RootStackParamList = {
+  WeekExpenses: undefined;
+  MonthExpenses: undefined;
+  YearExpenses: undefined;
+  NewExpense: undefined;
+  Expenses: undefined;
+  ExpenseDetails: Expense;
+};

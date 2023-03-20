@@ -1,8 +1,10 @@
-import { View, Text, SectionList, StyleSheet } from "react-native";
+import { View, Text, SectionList, StyleSheet, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import Dinero from "dinero.js";
 // Tipos
-import { Expense } from "../global/types";
+import { Expense, RootStackParamList } from "../global/types";
 
 // Estilos
 import { palette } from "../global/styles";
@@ -19,18 +21,24 @@ export default function ExpenseList({
     return Dinero({ amount: amount, currency: "BRL" }).toFormat("$0,0.00");
   }
 
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   return (
     <SectionList
       style={styles.section}
       sections={expenses}
-      // ListHeaderComponent={<Text style={styles.header}>Total: R$ 230,00</Text>}
-      renderItem={({ item, index }) => (
-        <View style={styles.item}>
+      renderItem={({ item }) => (
+        <Pressable
+          android_ripple={{ color: palette.grey.main }}
+          onPress={() => navigation.navigate("ExpenseDetails", item)}
+          style={styles.item}
+        >
           <Text style={styles.title}>{item.title}</Text>
           <View style={styles.priceBox}>
             <Text style={styles.priceText}>{transformAmount(item.amount)}</Text>
           </View>
-        </View>
+        </Pressable>
       )}
       renderSectionHeader={({ section: { title } }) => (
         <Text style={styles.header}>{title}</Text>
@@ -70,7 +78,7 @@ const styles = StyleSheet.create({
   priceBox: {
     backgroundColor: palette.primary.darker,
     paddingHorizontal: 7,
-    paddingVertical: 3,
+    paddingVertical: 5,
   },
   priceText: {
     fontSize: 18,

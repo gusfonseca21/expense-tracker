@@ -127,7 +127,10 @@ export default function NewExpense() {
         ref={descriptionRef}
       />
       <View style={styles.button}>
-        <Pressable onPress={postExpense} android_ripple={{ color: "#000000" }}>
+        <Pressable
+          onPress={postExpense}
+          android_ripple={{ color: palette.grey.main }}
+        >
           <Text style={styles.buttonText}>Adicionar Despesa</Text>
         </Pressable>
       </View>
