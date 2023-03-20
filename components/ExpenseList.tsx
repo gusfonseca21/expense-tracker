@@ -1,5 +1,6 @@
 import { View, Text, SectionList, StyleSheet } from "react-native";
 
+import Dinero from "dinero.js";
 // Tipos
 import { Expense } from "../global/types";
 
@@ -14,6 +15,10 @@ export default function ExpenseList({
     data: Expense[];
   }[];
 }) {
+  function transformAmount(amount: number) {
+    return Dinero({ amount: amount, currency: "BRL" }).toFormat("$0,0.00");
+  }
+
   return (
     <SectionList
       style={styles.section}
@@ -21,11 +26,9 @@ export default function ExpenseList({
       // ListHeaderComponent={<Text style={styles.header}>Total: R$ 230,00</Text>}
       renderItem={({ item, index }) => (
         <View style={styles.item}>
-          <View style={styles.leftView}>
-            <Text style={styles.title}>{item.title}</Text>
-          </View>
+          <Text style={styles.title}>{item.title}</Text>
           <View style={styles.priceBox}>
-            <Text style={styles.priceText}>{`R$ ${item.amount}`}</Text>
+            <Text style={styles.priceText}>{transformAmount(item.amount)}</Text>
           </View>
         </View>
       )}
@@ -66,12 +69,11 @@ const styles = StyleSheet.create({
   },
   priceBox: {
     backgroundColor: palette.primary.darker,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
   },
   priceText: {
-    fontSize: 20,
+    fontSize: 18,
     color: "white",
   },
-  leftView: {},
 });

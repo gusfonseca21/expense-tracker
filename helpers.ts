@@ -1,6 +1,7 @@
 // Types
 import { groupBy } from "lodash";
 import { Expense, FilterFunctions } from "./global/types";
+import { ToastAndroid } from "react-native";
 
 export function groupExpenses(
   expenses: Expense[],
@@ -9,9 +10,14 @@ export function groupExpenses(
 ) {
   const filteredExpenses = expenses
     .filter(
-      (expense) => filterFunctions(expense.date) === filterFunctions(new Date())
+      (expense) =>
+        filterFunctions(new Date(expense.date)) === filterFunctions(new Date())
     )
-    .sort((a, b) => b.date.getTime() - a.date.getTime());
+    .sort((a, b) => {
+      const aDate = new Date(a.date);
+      const bDate = new Date(b.date);
+      return bDate.getTime() - aDate.getTime();
+    });
 
   const groupedExpenses = groupBy(filteredExpenses, titleFunction);
 
@@ -19,4 +25,14 @@ export function groupExpenses(
     title: groupTitle,
     data: groupedExpenses[groupTitle],
   }));
+}
+
+export function callToast(message: string, seconds: number) {
+  ToastAndroid.showWithGravityAndOffset(
+    message,
+    seconds,
+    ToastAndroid.TOP,
+    25,
+    50
+  );
 }

@@ -1,5 +1,5 @@
 import { Pressable } from "react-native";
-
+import React, { useContext, useEffect } from "react";
 // Navigators
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -19,13 +19,15 @@ import NewExpense from "./screens/NewExpense";
 
 // Tipos
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
+import { ExpensesContext } from "./context/ExpensesContext";
+import axios from "axios";
+import { Expense } from "./global/types";
+import { callToast } from "./helpers";
 
 type HeaderOptions = {
   headerTitleAlign: "center" | "left" | undefined;
   headerStyle: {
     backgroundColor: string;
-    borderBottomWidth: number;
-    borderBottomColor: string;
   };
 };
 
@@ -47,8 +49,6 @@ const headerOptions: HeaderOptions = {
   headerTitleAlign: "center",
   headerStyle: {
     backgroundColor: palette.primary.dark,
-    borderBottomWidth: 0.5,
-    borderBottomColor: palette.white,
   },
 };
 
@@ -130,6 +130,29 @@ function TabNavigator() {
 }
 
 export default function Navigator() {
+  const expensesCtx = useContext(ExpensesContext);
+
+  useEffect(() => {
+    axios
+      .get(
+        "https://expense-tracker-e759e-default-rtdb.firebaseio.com/expenses.json"
+      )
+      .then((response) => {
+        const transformedData: Expense[] = Object.keys(response.data).map(
+          (key) => {
+            return { ...response.data[key], id: key };
+          }
+        );
+        expensesCtx.setExpenses(transformedData);
+      })
+      .catch((error) =>
+        callToast(
+          `Houve um erro ao tentar carregar suas despesas: ${error.message}`,
+          3
+        )
+      );
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator
