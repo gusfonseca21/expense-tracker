@@ -3,7 +3,7 @@ import { getWeek, getMonth, getYear } from "date-fns";
 export type Expense = {
   id?: number;
   amount: number;
-  date: Date;
+  date: string;
   title: string;
   description: string;
 };

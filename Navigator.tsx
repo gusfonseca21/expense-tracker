@@ -1,7 +1,7 @@
-import { Pressable } from "react-native";
+import { Pressable, View, StyleSheet } from "react-native";
 import { useContext, useEffect } from "react";
 // Navigators
-import { NavigationContainer, DarkTheme } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -57,14 +57,14 @@ const headerOptions: HeaderOptions = {
 
 function addExpenseIcon(navigation: Navigation) {
   return (
-    <Pressable onPress={() => navigation.navigate("NewExpense")}>
-      <Ionicons
-        name='add-outline'
-        size={38}
-        color='#fff'
-        style={{ marginRight: 20 }}
-      />
-    </Pressable>
+    <View style={styles.addExpenseIcon}>
+      <Pressable
+        onPress={() => navigation.navigate("NewExpense")}
+        android_ripple={{ color: palette.grey.dark }}
+      >
+        <Ionicons name='add-outline' size={38} color='#fff' />
+      </Pressable>
+    </View>
   );
 }
 
@@ -178,3 +178,11 @@ export default function Navigator() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  addExpenseIcon: {
+    borderRadius: 80,
+    overflow: "hidden",
+    alignSelf: "center",
+  },
+});

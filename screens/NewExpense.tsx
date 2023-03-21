@@ -1,12 +1,4 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  Button,
-  Pressable,
-  ToastAndroid,
-} from "react-native";
+import { Text, View, StyleSheet, TextInput, Pressable } from "react-native";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import MaskInput, { Masks } from "react-native-mask-input";
@@ -18,7 +10,6 @@ import axios from "axios";
 import { parse } from "date-fns";
 import { callToast } from "../helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
-// import { ToastAndroid } from "react-native/Libraries/Components/ToastAndroid/ToastAndroid";
 
 export default function NewExpense() {
   const [title, setTitle] = useState("");
@@ -52,7 +43,7 @@ export default function NewExpense() {
     const newExpenseObj = {
       title: title,
       amount: Number(amount),
-      date: parse(date, "dd/MM/yyyy", new Date()),
+      date: parse(date, "dd/MM/yyyy", new Date()).toString(),
       description: description,
     };
 

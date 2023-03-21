@@ -2,6 +2,7 @@
 import { groupBy } from "lodash";
 import { Expense, FilterFunctions } from "./global/types";
 import { ToastAndroid } from "react-native";
+import Dinero from "dinero.js";
 
 export function groupExpenses(
   expenses: Expense[],
@@ -35,4 +36,8 @@ export function callToast(message: string, seconds: number) {
     25,
     50
   );
+}
+
+export function getAmount(amount: number) {
+  return Dinero({ amount: amount, currency: "BRL" }).toFormat("$0,0.00");
 }

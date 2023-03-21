@@ -1,8 +1,8 @@
 import { View, Text, SectionList, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { getAmount } from "../helpers";
 
-import Dinero from "dinero.js";
 // Tipos
 import { Expense, RootStackParamList } from "../global/types";
 
@@ -17,10 +17,6 @@ export default function ExpenseList({
     data: Expense[];
   }[];
 }) {
-  function transformAmount(amount: number) {
-    return Dinero({ amount: amount, currency: "BRL" }).toFormat("$0,0.00");
-  }
-
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -36,7 +32,7 @@ export default function ExpenseList({
         >
           <Text style={styles.title}>{item.title}</Text>
           <View style={styles.priceBox}>
-            <Text style={styles.priceText}>{transformAmount(item.amount)}</Text>
+            <Text style={styles.priceText}>{getAmount(item.amount)}</Text>
           </View>
         </Pressable>
       )}
@@ -49,9 +45,7 @@ export default function ExpenseList({
 
 const styles = StyleSheet.create({
   section: {
-    flex: 1,
     width: "100%",
-    paddingHorizontal: 20,
   },
   item: {
     backgroundColor: palette.primary.lighter,

@@ -34,5 +34,6 @@ export const globalStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: palette.primary.main,
+    padding: 20,
   },
 });
