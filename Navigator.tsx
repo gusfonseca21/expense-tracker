@@ -18,12 +18,12 @@ import { palette } from "./global/styles";
 import NewExpense from "./screens/NewExpense";
 
 // Tipos
-import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { ExpensesContext } from "./context/ExpensesContext";
 import axios from "axios";
-import { Expense } from "./global/types";
+import { Expense, Navigation } from "./global/types";
 import { callToast } from "./helpers";
 import ExpenseDetails from "./screens/ExpenseDetails";
+import { DB_URL } from "./global/database";
 
 type HeaderOptions = {
   headerTitleAlign: "center" | "left" | undefined;
@@ -32,8 +32,6 @@ type HeaderOptions = {
   };
   headerTintColor: string;
 };
-
-type Navigation = NavigationProp<ParamListBase>;
 
 type IconName =
   | "time"
@@ -135,9 +133,7 @@ export default function Navigator() {
 
   useEffect(() => {
     axios
-      .get(
-        "https://expense-tracker-e759e-default-rtdb.firebaseio.com/expenses.json"
-      )
+      .get(`${DB_URL}expenses.json`)
       .then((response) => {
         const transformedData: Expense[] = Object.keys(response.data).map(
           (key) => {

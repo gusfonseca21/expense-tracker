@@ -20,7 +20,7 @@ export default function NewExpense() {
   const [dateInputError, setDateInputError] = useState(false);
   const [description, setDescription] = useState("");
 
-  const { addExpenses } = useContext(ExpensesContext);
+  const { addExpense } = useContext(ExpensesContext);
 
   const amountRef = useRef<TextInput>(null);
   const dateRef = useRef<TextInput>(null);
@@ -55,7 +55,7 @@ export default function NewExpense() {
       .then(() => {
         clearInputs();
         callToast("Sua despesa foi salva com sucesso!", 2);
-        addExpenses(newExpenseObj);
+        addExpense(newExpenseObj);
       })
       .catch((error) =>
         callToast(`Houve um erro ao salvar sua despesa: ${error.message}`, 3)

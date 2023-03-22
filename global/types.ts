@@ -1,7 +1,8 @@
 import { getWeek, getMonth, getYear } from "date-fns";
+import { NavigationProp, ParamListBase } from "@react-navigation/native";
 
 export type Expense = {
-  id?: number;
+  id?: string;
   amount: number;
   date: string;
   title: string;
@@ -29,3 +30,5 @@ export type RootStackParamList = {
   Expenses: undefined;
   ExpenseDetails: Expense;
 };
+
+export type Navigation = NavigationProp<ParamListBase>;
