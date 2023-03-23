@@ -6,11 +6,13 @@ export const ExpensesContext = createContext<{
   addExpense: (expenseObj: Expense) => void;
   deleteExpense: (expenseId: string | undefined) => void;
   setExpenses: (value: Expense[]) => void;
+  updateExpenses: (expenseObj: Expense) => void;
 }>({
   expenses: [],
   addExpense: () => {},
   deleteExpense: () => {},
   setExpenses: () => {},
+  updateExpenses: () => {},
 });
 
 const ExpensesProvider = ({ children }: { children: React.ReactNode }) => {
@@ -26,9 +28,26 @@ const ExpensesProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
+  const updateExpenses = (expenseObj: Expense) => {
+    setExpenses((prevState) =>
+      prevState.map((prevExpense): Expense => {
+        if (prevExpense.id === expenseObj.id) {
+          return expenseObj;
+        }
+        return prevExpense;
+      })
+    );
+  };
+
   return (
     <ExpensesContext.Provider
-      value={{ expenses, addExpense, setExpenses, deleteExpense }}
+      value={{
+        expenses,
+        addExpense,
+        setExpenses,
+        deleteExpense,
+        updateExpenses,
+      }}
     >
       {children}
     </ExpensesContext.Provider>

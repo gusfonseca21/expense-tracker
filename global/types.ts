@@ -1,5 +1,6 @@
 import { getWeek, getMonth, getYear } from "date-fns";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type Expense = {
   id?: string;
@@ -29,6 +30,9 @@ export type RootStackParamList = {
   NewExpense: undefined;
   Expenses: undefined;
   ExpenseDetails: Expense;
+  EditExpense: Expense;
 };
 
 export type Navigation = NavigationProp<ParamListBase>;
+
+export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;

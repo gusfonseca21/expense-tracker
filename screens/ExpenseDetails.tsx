@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
 import { globalStyles, palette } from "../global/styles";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../global/types";
+import { AppNavigationProp, RootStackParamList } from "../global/types";
 import type { RouteProp } from "@react-navigation/native";
 import { callToast, getAmount } from "../helpers";
 import { format } from "date-fns";
@@ -14,7 +14,7 @@ import { ExpensesContext } from "../context/ExpensesContext";
 export default function ExpenseDetails() {
   const route = useRoute<RouteProp<RootStackParamList, "ExpenseDetails">>();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<AppNavigationProp>();
 
   const { deleteExpense } = useContext(ExpensesContext);
 
@@ -104,6 +104,7 @@ export default function ExpenseDetails() {
           <Pressable
             android_ripple={{ color: palette.grey.dark }}
             style={styles.icon}
+            onPress={() => navigation.navigate("EditExpense", route.params)}
           >
             <Ionicons name='pencil-sharp' size={35} color='#fff' />
           </Pressable>
@@ -125,7 +126,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     padding: 1,
     textAlign: "center",
-    textTransform: "capitalize",
     color: "#fff",
   },
   detailTitle: {
@@ -134,7 +134,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     padding: 1,
     textAlign: "center",
-    textTransform: "capitalize",
   },
   iconsView: {
     borderRadius: 50,

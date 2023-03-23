@@ -1,28 +1,28 @@
 import { Pressable, View, StyleSheet } from "react-native";
 import { useContext, useEffect } from "react";
-// Navigators
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-// Ícones
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-// Screens
-import WeekExpenses from "./screens/WeekExpenses";
-import MonthExpenses from "./screens/MonthExpenses";
-import YearExpenses from "./screens/YearExpenses";
+import {
+  WeekExpenses,
+  MonthExpenses,
+  YearExpenses,
+  EditExpense,
+  ExpenseDetails,
+} from "./screens";
 
-// Estilos
 import { palette } from "./global/styles";
 import NewExpense from "./screens/NewExpense";
 
-// Tipos
 import { ExpensesContext } from "./context/ExpensesContext";
 import axios from "axios";
 import { Expense, Navigation } from "./global/types";
 import { callToast } from "./helpers";
-import ExpenseDetails from "./screens/ExpenseDetails";
+
 import { DB_URL } from "./global/database";
 
 type HeaderOptions = {
@@ -155,7 +155,9 @@ export default function Navigator() {
       <Stack.Navigator
         screenOptions={({ route }) => ({
           headerShown:
-            route.name === "NewExpense" || route.name === "ExpenseDetails",
+            route.name === "NewExpense" ||
+            route.name === "ExpenseDetails" ||
+            route.name === "EditExpense",
           ...headerOptions,
         })}
       >
@@ -168,7 +170,12 @@ export default function Navigator() {
         <Stack.Screen
           name='ExpenseDetails'
           component={ExpenseDetails}
-          options={{ title: "Detalhes da despesa" }}
+          options={{ title: "Detalhes da Despesa" }}
+        />
+        <Stack.Screen
+          name='EditExpense'
+          component={EditExpense}
+          options={{ title: "Editar Despesa" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

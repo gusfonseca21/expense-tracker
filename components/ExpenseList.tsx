@@ -1,10 +1,9 @@
 import { View, Text, SectionList, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { getAmount } from "../helpers";
 
 // Tipos
-import { Expense, RootStackParamList } from "../global/types";
+import { AppNavigationProp, Expense } from "../global/types";
 
 // Estilos
 import { palette } from "../global/styles";
@@ -17,8 +16,7 @@ export default function ExpenseList({
     data: Expense[];
   }[];
 }) {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<AppNavigationProp>();
 
   return (
     <SectionList
