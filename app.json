@@ -19,10 +19,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.gusfonseca.expensetracker"
     },
     "web": {
       "favicon": "./assets/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5978fced-870d-4f35-8d8c-523e4346a178"
+      }
     }
   }
 }
