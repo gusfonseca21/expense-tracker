@@ -129,9 +129,10 @@ function TabNavigator() {
 }
 
 export default function Navigator() {
-  const expensesCtx = useContext(ExpensesContext);
+  const { setExpenses, setLoadingExpenses } = useContext(ExpensesContext);
 
   useEffect(() => {
+    setLoadingExpenses(true);
     axios
       .get(`${DB_URL}expenses.json`)
       .then((response) => {
@@ -140,14 +141,16 @@ export default function Navigator() {
             return { ...response.data[key], id: key };
           }
         );
-        expensesCtx.setExpenses(transformedData);
+        setExpenses(transformedData);
+        setLoadingExpenses(false);
       })
-      .catch((error) =>
+      .catch((error) => {
         callToast(
           `Houve um erro ao tentar carregar suas despesas: ${error.message}`,
           3
-        )
-      );
+        );
+        setLoadingExpenses(false);
+      });
   }, []);
 
   return (

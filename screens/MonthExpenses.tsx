@@ -1,16 +1,15 @@
 import { getMonth, getWeekOfMonth } from "date-fns";
 import { useContext } from "react";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import ExpenseList from "../components/ExpenseList";
 import { ExpensesContext } from "../context/ExpensesContext";
 
 // Estilos
-import { globalStyles } from "../global/styles";
-import { Expense } from "../global/types";
+import { globalStyles, palette } from "../global/styles";
 import { groupExpenses } from "../helpers";
 
 export default function MonthExpenses() {
-  const { expenses } = useContext(ExpensesContext);
+  const { expenses, loadingExpenses } = useContext(ExpensesContext);
 
   const monthExpenses = groupExpenses(
     expenses,
@@ -19,7 +18,15 @@ export default function MonthExpenses() {
   );
   return (
     <View style={globalStyles.pageStyle}>
-      <ExpenseList expenses={monthExpenses} />
+      {!loadingExpenses ? (
+        <ExpenseList expenses={monthExpenses} />
+      ) : (
+        <ActivityIndicator
+          animating
+          size='large'
+          color={palette.secondary.main}
+        />
+      )}
     </View>
   );
 }

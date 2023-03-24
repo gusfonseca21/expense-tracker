@@ -18,9 +18,20 @@ export default function ExpenseList({
 }) {
   const navigation = useNavigation<AppNavigationProp>();
 
+  const totalAmount = expenses.reduce((accumulator, category) => {
+    const categoryTotal = category.data.reduce((catAccumulator, expense) => {
+      return catAccumulator + expense.amount;
+    }, 0);
+
+    return accumulator + categoryTotal;
+  }, 0);
+
   return (
     <SectionList
       style={styles.section}
+      ListHeaderComponent={() => (
+        <Text style={styles.header}>{`Total: ${getAmount(totalAmount)}`}</Text>
+      )}
       sections={expenses}
       renderItem={({ item }) => (
         <Pressable
