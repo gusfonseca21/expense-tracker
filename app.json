@@ -1,19 +1,19 @@
 {
   "expo": {
-    "name": "expense-tracker",
+    "name": "Expense Tracker",
     "slug": "expense-tracker",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gusfonseca.expensetracker"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,6 +29,18 @@
       "eas": {
         "projectId": "5978fced-870d-4f35-8d8c-523e4346a178"
       }
-    }
+    },
+    "plugins": ["sentry-expo"]
+  },
+  "hooks": {
+    "postPublish": [
+      {
+        "file": "sentry-expo/upload-sourcemaps",
+        "config": {
+          "organization": "Gustavo Fonseca",
+          "project": "Expense Tracker"
+        }
+      }
+    ]
   }
 }
