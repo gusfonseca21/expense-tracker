@@ -1,4 +1,4 @@
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, Text } from "react-native";
 import { useContext } from "react";
 import { format, getWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -8,7 +8,7 @@ import { globalStyles, palette } from "../global/styles";
 
 // Tipos
 import ExpenseList from "../components/ExpenseList";
-import { groupExpenses } from "../helpers";
+import { getNoExpensesText, groupExpenses } from "../helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
 
 export default function WeekExpenses() {
@@ -20,14 +20,18 @@ export default function WeekExpenses() {
 
   return (
     <View style={globalStyles.pageStyle}>
-      {!loadingExpenses ? (
-        <ExpenseList expenses={weekExpenses} />
-      ) : (
+      {loadingExpenses ? (
         <ActivityIndicator
           animating
           size='large'
           color={palette.secondary.main}
         />
+      ) : weekExpenses.length ? (
+        <ExpenseList expenses={weekExpenses} />
+      ) : (
+        <Text style={globalStyles.noExpensesText}>
+          {getNoExpensesText("semana")}
+        </Text>
       )}
     </View>
   );

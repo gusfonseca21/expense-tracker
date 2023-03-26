@@ -1,19 +1,19 @@
 import { StyleSheet } from "react-native";
 
 const primary = {
-  lighter: "#66c7b9",
-  light: "#33b5a1",
-  main: "#00A28A",
-  dark: "#00826e",
-  darker: "#006153",
+  lighter: "#8c97d3",
+  light: "#6574c4",
+  main: "#3f51b5",
+  dark: "#324191",
+  darker: "#26316d",
 };
 
 const secondary = {
-  lighter: "#ffe466",
-  light: "#ffdb33",
-  main: "#FFD200",
-  dark: "#cca800",
-  darker: "#997e00",
+  lighter: "#ffda6a",
+  light: "#ffcd39",
+  main: "#ffc107",
+  dark: "#cc9a06",
+  darker: "#997404",
 };
 
 const grey = {
@@ -35,5 +35,11 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: palette.primary.main,
     padding: 20,
+  },
+  noExpensesText: {
+    fontSize: 25,
+    color: "#fff",
+    textAlign: "center",
+    textAlignVertical: "center",
   },
 });

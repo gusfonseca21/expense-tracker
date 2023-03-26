@@ -41,3 +41,9 @@ export function callToast(message: string, seconds: number) {
 export function getAmount(amount: number) {
   return Dinero({ amount: amount, currency: "BRL" }).toFormat("$0,0.00");
 }
+
+export function getNoExpensesText(period: "semana" | "mês" | "ano") {
+  return `Nenhum gasto ${
+    period === "semana" ? "nesta" : "neste"
+  } ${period} até agora`;
+}

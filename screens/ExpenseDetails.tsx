@@ -11,6 +11,8 @@ import axios from "axios";
 import { DB_URL } from "../global/database";
 import { ExpensesContext } from "../context/ExpensesContext";
 
+const iconColor = palette.primary.lighter;
+
 export default function ExpenseDetails() {
   const route = useRoute<RouteProp<RootStackParamList, "ExpenseDetails">>();
 
@@ -56,29 +58,13 @@ export default function ExpenseDetails() {
 
   return (
     <View style={globalStyles.pageStyle}>
-      <View style={styles.card}>
-        <View>
-          <Text style={styles.detailTitle}>Título</Text>
-          <Text style={styles.detailValue}>{title}</Text>
-        </View>
-        <View>
-          <Text style={styles.detailTitle}>Valor</Text>
-          <Text style={styles.detailValue}>{getAmount(amount)}</Text>
-        </View>
-        <View>
-          <Text style={styles.detailTitle}>Data</Text>
-          <Text style={styles.detailValue}>
-            {format(new Date(date), "dd/MM/yyyy")}
-          </Text>
-        </View>
-        <View>
-          <Text style={styles.detailTitle}>Descrição</Text>
-          <Text style={[styles.detailValue, { textTransform: "none" }]}>
-            {description !== ""
-              ? description
-              : "Esta despesa não possui uma descrição"}
-          </Text>
-        </View>
+      <View style={styles.expense}>
+        <Text style={styles.expenseDetail}>{title}</Text>
+        <Text style={styles.expenseDetail}>{getAmount(amount)}</Text>
+        <Text style={styles.expenseDetail}>
+          {format(new Date(date), "dd/MM/yyyy")}
+        </Text>
+        <Text style={styles.expenseDetail}>{description}</Text>
       </View>
       <View
         style={{
@@ -94,7 +80,7 @@ export default function ExpenseDetails() {
             <Ionicons
               name='trash-outline'
               size={35}
-              color='#fff'
+              color={iconColor}
               style={styles.icon}
             />
           </Pressable>
@@ -106,7 +92,7 @@ export default function ExpenseDetails() {
             style={styles.icon}
             onPress={() => navigation.navigate("EditExpense", route.params)}
           >
-            <Ionicons name='pencil-sharp' size={35} color='#fff' />
+            <Ionicons name='pencil-sharp' size={35} color={iconColor} />
           </Pressable>
         </View>
       </View>
@@ -115,24 +101,15 @@ export default function ExpenseDetails() {
 }
 
 const styles = StyleSheet.create({
-  card: {
+  expense: {
     flex: 1,
-    width: "100%",
     gap: 10,
+    justifyContent: "center",
   },
-  detailValue: {
-    fontSize: 20,
-    backgroundColor: palette.primary.dark,
-    fontWeight: "bold",
-    padding: 1,
-    textAlign: "center",
+  expenseDetail: {
+    fontSize: 28,
     color: "#fff",
-  },
-  detailTitle: {
-    fontSize: 20,
-    backgroundColor: palette.secondary.main,
-    fontWeight: "bold",
-    padding: 1,
+    fontWeight: "500",
     textAlign: "center",
   },
   iconsView: {

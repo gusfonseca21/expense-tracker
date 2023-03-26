@@ -30,7 +30,9 @@ export default function ExpenseList({
     <SectionList
       style={styles.section}
       ListHeaderComponent={() => (
-        <Text style={styles.header}>{`Total: ${getAmount(totalAmount)}`}</Text>
+        <Text style={styles.totalHeaderText}>{`Total: ${getAmount(
+          totalAmount
+        )}`}</Text>
       )}
       sections={expenses}
       renderItem={({ item }) => (
@@ -56,10 +58,18 @@ const styles = StyleSheet.create({
   section: {
     width: "100%",
   },
+  totalHeaderText: {
+    fontSize: 25,
+    color: "#fff",
+    fontWeight: "500",
+    textAlign: "center",
+    padding: 5,
+    marginBottom: 3,
+  },
   item: {
-    backgroundColor: palette.primary.lighter,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    backgroundColor: palette.primary.darker,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -77,14 +87,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    color: "#fff",
   },
   priceBox: {
-    backgroundColor: palette.primary.darker,
+    backgroundColor: "#fff",
     paddingHorizontal: 7,
     paddingVertical: 5,
   },
   priceText: {
     fontSize: 18,
-    color: "white",
+    fontWeight: "bold",
+    color: palette.primary.darker,
   },
 });
