@@ -62,7 +62,7 @@ export default function ExpenseDetails() {
         <Text style={styles.expenseDetail}>{title}</Text>
         <Text style={styles.expenseDetail}>{getAmount(amount)}</Text>
         <Text style={styles.expenseDetail}>
-          {format(new Date(date), "dd/MM/yyyy")}
+          {format(new Date(date), "dd/MM/yyyy HH:mm")}
         </Text>
         <Text style={styles.expenseDetail}>{description}</Text>
       </View>

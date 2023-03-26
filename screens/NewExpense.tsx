@@ -6,7 +6,7 @@ import { globalStyles } from "../global/styles";
 import axios from "axios";
 import { callToast } from "../helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
-import ExpenseInput from "../components/ExpenseInput";
+import ExpenseInput from "../components/ExpenseForm";
 import { Expense } from "../global/types";
 import { useNavigation } from "@react-navigation/native";
 
@@ -35,7 +35,7 @@ export default function NewExpense() {
     <View style={[globalStyles.pageStyle, { paddingHorizontal: 20 }]}>
       <ExpenseInput
         buttonTitle='Adicionar Despesa'
-        onButtonClick={postExpense}
+        sendFormData={postExpense}
       />
     </View>
   );

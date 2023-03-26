@@ -6,7 +6,7 @@ import { globalStyles } from "../global/styles";
 import axios from "axios";
 import { callToast } from "../helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
-import ExpenseInput from "../components/ExpenseInput";
+import ExpenseInput from "../components/ExpenseForm";
 import {
   AppNavigationProp,
   Expense,
@@ -52,7 +52,7 @@ export default function EditExpense() {
     <View style={[globalStyles.pageStyle, { paddingHorizontal: 20 }]}>
       <ExpenseInput
         buttonTitle='Atualizar Despesa'
-        onButtonClick={editExpense}
+        sendFormData={editExpense}
         edit={expenseToEdit}
       />
     </View>

@@ -2,45 +2,35 @@ import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import MaskInput, { Masks } from "react-native-mask-input";
 import { palette } from "../global/styles";
-import { format, parse } from "date-fns";
+import { format } from "date-fns";
 import { Expense } from "../global/types";
+import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 
-type ExpenseInputPropType = {
+type ExpenseFormPropType = {
   buttonTitle: string;
-  onButtonClick: (newExpenseObj: Expense) => void;
+  sendFormData: (newExpenseObj: Expense) => void;
   edit?: Expense | undefined;
 };
 
-export default function ExpenseInput({
+export default function ExpenseForm({
   buttonTitle,
-  onButtonClick,
+  sendFormData,
   edit,
-}: ExpenseInputPropType) {
+}: ExpenseFormPropType) {
   const [title, setTitle] = useState(edit ? edit.title : "");
   const [titleInputError, setTitleInputError] = useState(false);
   const [amount, setAmount] = useState(edit ? edit.amount.toString() : "");
   const [amountInputError, setAmountInputError] = useState(false);
-  const [date, setDate] = useState(
-    edit ? format(new Date(edit.date), "dd/MM/yyyy") : ""
-  );
-  const [dateInputError, setDateInputError] = useState(false);
+  const [date, setDate] = useState(new Date());
   const [description, setDescription] = useState(edit ? edit.description : "");
 
   const amountRef = useRef<TextInput>(null);
   const dateRef = useRef<TextInput>(null);
   const descriptionRef = useRef<TextInput>(null);
 
-  function clearInputs() {
-    setTitle("");
-    setAmount("");
-    setDate("");
-    setDescription("");
-  }
-
   useEffect(() => {
     if (titleInputError && title !== "") setTitleInputError(false);
     if (amountInputError && amount !== "") setAmountInputError(false);
-    if (dateInputError && date !== "") setDateInputError(false);
   }, [title, amount, date]);
 
   function postExpense() {
@@ -52,24 +42,33 @@ export default function ExpenseInput({
       setAmountInputError(true);
       return;
     }
-    if (date.trim() === "" || date.length != 10) {
-      setDate("");
-      setDateInputError(true);
-      return;
-    }
 
     const newExpenseObj: Expense = {
       title: title,
       amount: Number(amount),
-      date: parse(date, "dd/MM/yyyy", new Date()).toString(),
+      date: new Date(date).toString(),
       description: description,
     };
 
     if (edit) newExpenseObj.id = edit.id;
 
-    onButtonClick(newExpenseObj);
-    // clearInputs();
+    sendFormData(newExpenseObj);
   }
+
+  function showDateTimePicker(mode: "date" | "time") {
+    DateTimePickerAndroid.open({
+      value: date,
+      onChange: (event) => {
+        setDate(new Date(Number(event.nativeEvent.timestamp)));
+        if (event.type === "set" && mode === "date") showDateTimePicker("time");
+        if (event.type === "set" && mode === "time")
+          descriptionRef.current?.focus();
+      },
+      mode: mode,
+      is24Hour: true,
+    });
+  }
+
   return (
     <>
       <TextInput
@@ -93,20 +92,16 @@ export default function ExpenseInput({
         ref={amountRef}
         onSubmitEditing={() => dateRef.current?.focus()}
       />
-      <MaskInput
-        style={styles.input}
-        placeholder={!dateInputError ? "Data *" : "Insira uma Data Válida!"}
-        placeholderTextColor={dateInputError ? "red" : "#aaa"}
-        onChangeText={setDate}
-        inputMode='numeric'
-        value={date}
-        mask={Masks.DATE_DDMMYYYY}
+      <TextInput
         ref={dateRef}
-        onSubmitEditing={() => descriptionRef.current?.focus()}
+        style={styles.input}
+        value={format(date, "dd/MM/yyyy HH:mm")}
+        onFocus={() => showDateTimePicker("date")}
       />
       <TextInput
         style={styles.input}
         placeholder='Descrição'
+        placeholderTextColor='#aaa'
         onChangeText={setDescription}
         value={description}
         multiline

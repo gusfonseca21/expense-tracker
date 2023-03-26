@@ -93,10 +93,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 7,
     paddingVertical: 5,
+    minWidth: 85,
   },
   priceText: {
     fontSize: 18,
     fontWeight: "bold",
     color: palette.primary.darker,
+    textAlign: "center",
   },
 });
