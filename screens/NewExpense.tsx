@@ -21,8 +21,9 @@ export default function NewExpense() {
         "https://expense-tracker-e759e-default-rtdb.firebaseio.com/expenses.json",
         newExpenseObj
       )
-      .then(() => {
+      .then((response) => {
         callToast("Sua despesa foi salva com sucesso!", 2);
+        newExpenseObj.id = response.data.name;
         addExpense(newExpenseObj);
         navigation.goBack();
       })

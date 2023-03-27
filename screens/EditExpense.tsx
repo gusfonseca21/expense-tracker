@@ -40,6 +40,7 @@ export default function EditExpense() {
         callToast("Sua despesa foi editada com sucesso!", 2);
 
         editedExpense.id = expenseToEdit.id;
+
         updateExpenses(expenseToEdit);
         navigation.navigate("ExpenseDetails", editedExpense);
       })

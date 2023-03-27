@@ -29,7 +29,9 @@ export default function ExpenseDetails() {
       [
         {
           text: "Deletar",
-          onPress: () => deleteExpenseHandler(id),
+          onPress: () => {
+            if (id) deleteExpenseHandler(id);
+          },
         },
         {},
         { text: "Cancelar" },
@@ -40,7 +42,7 @@ export default function ExpenseDetails() {
     );
   }
 
-  function deleteExpenseHandler(expenseId: string | undefined) {
+  function deleteExpenseHandler(expenseId: string) {
     axios
       .delete(`${DB_URL}expenses/${expenseId}.json`)
       .then(() => {

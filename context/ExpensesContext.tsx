@@ -4,7 +4,7 @@ import { Expense } from "../global/types";
 export const ExpensesContext = createContext<{
   expenses: Expense[];
   addExpense: (expenseObj: Expense) => void;
-  deleteExpense: (expenseId: string | undefined) => void;
+  deleteExpense: (expenseId: string) => void;
   setExpenses: (value: Expense[]) => void;
   updateExpenses: (expenseObj: Expense) => void;
   loadingExpenses: boolean;
@@ -27,10 +27,10 @@ const ExpensesProvider = ({ children }: { children: React.ReactNode }) => {
     setExpenses((prevState) => [...prevState, expenseObj]);
   };
 
-  const deleteExpense = (expenseId: string | undefined) => {
-    setExpenses((prevState) =>
-      prevState.filter((expense) => expense.id !== expenseId)
-    );
+  const deleteExpense = (expenseId: string) => {
+    setExpenses((prevState) => {
+      return prevState.filter((expense) => expense.id !== expenseId);
+    });
   };
 
   const updateExpenses = (expenseObj: Expense) => {
