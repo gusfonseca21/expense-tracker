@@ -8,7 +8,7 @@ export default function App() {
   return (
     <>
       <ExpensesProvider>
-        <StatusBar style='auto' />
+        <StatusBar style='light' />
         <View style={{ flex: 1, backgroundColor: palette.primary.main }}>
           <Navigator />
         </View>

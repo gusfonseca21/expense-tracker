@@ -8,6 +8,7 @@ export type Expense = {
   date: string;
   title: string;
   description: string;
+  paid: boolean;
 };
 
 export type ExpensesDividedByDay = {

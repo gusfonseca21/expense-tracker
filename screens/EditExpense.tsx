@@ -29,6 +29,7 @@ export default function EditExpense() {
       date: expenseToEdit.date,
       description: expenseToEdit.description,
       title: expenseToEdit.title,
+      paid: expenseToEdit.paid,
     };
 
     axios
