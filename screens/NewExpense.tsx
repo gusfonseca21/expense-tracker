@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { useContext } from "react";
 
 // Styles
@@ -6,7 +6,7 @@ import { globalStyles } from "../global/styles";
 import axios from "axios";
 import { callToast } from "../helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
-import ExpenseInput from "../components/ExpenseForm";
+import ExpenseInput from "./ExpenseForm";
 import { Expense } from "../global/types";
 import { useNavigation } from "@react-navigation/native";
 
@@ -33,11 +33,11 @@ export default function NewExpense() {
   }
 
   return (
-    <View style={[globalStyles.pageStyle, { paddingHorizontal: 20 }]}>
-      <ExpenseInput
+    <View style={globalStyles.pageStyle}>
+      {/* <ExpenseInput
         buttonTitle='Adicionar Despesa'
         sendFormData={postExpense}
-      />
+      /> */}
     </View>
   );
 }

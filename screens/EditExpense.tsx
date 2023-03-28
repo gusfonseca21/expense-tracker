@@ -6,7 +6,7 @@ import { globalStyles } from "../global/styles";
 import axios from "axios";
 import { callToast } from "../helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
-import ExpenseInput from "../components/ExpenseForm";
+import ExpenseInput from "./ExpenseForm";
 import {
   AppNavigationProp,
   Expense,

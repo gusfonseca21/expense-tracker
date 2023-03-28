@@ -24,6 +24,7 @@ import { Expense, Navigation } from "./global/types";
 import { callToast } from "./helpers";
 
 import { DB_URL } from "./global/database";
+import ExpenseForm from "./screens/ExpenseForm";
 
 type HeaderOptions = {
   headerTitleAlign: "center" | "left" | undefined;
@@ -57,7 +58,7 @@ function addExpenseIcon(navigation: Navigation) {
   return (
     <View style={styles.addExpenseIcon}>
       <Pressable
-        onPress={() => navigation.navigate("NewExpense")}
+        onPress={() => navigation.navigate("ExpenseForm")}
         android_ripple={{ color: palette.grey.dark }}
       >
         <Ionicons name='add-outline' size={38} color='#fff' />
@@ -160,7 +161,8 @@ export default function Navigator() {
           headerShown:
             route.name === "NewExpense" ||
             route.name === "ExpenseDetails" ||
-            route.name === "EditExpense",
+            route.name === "EditExpense" ||
+            route.name === "ExpenseForm",
           ...headerOptions,
         })}
       >
@@ -178,6 +180,11 @@ export default function Navigator() {
         <Stack.Screen
           name='EditExpense'
           component={EditExpense}
+          options={{ title: "Editar Despesa" }}
+        />
+        <Stack.Screen
+          name='ExpenseForm'
+          component={ExpenseForm}
           options={{ title: "Editar Despesa" }}
         />
       </Stack.Navigator>
