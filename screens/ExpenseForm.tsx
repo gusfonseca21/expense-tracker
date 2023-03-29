@@ -5,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   Switch,
+  ScrollView,
 } from "react-native";
 import { useEffect, useRef, useState, useContext } from "react";
 import CurrencyInput from "react-native-currency-input";
@@ -17,7 +18,18 @@ import axios from "axios";
 import { callToast } from "../helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
 
-const inputTextColor = "#000";
+const placeholderTextColor = palette.grey.light;
+
+const valueTextColor = "#fff";
+
+const inputText = {
+  fontSize: 20,
+  color: "#000",
+};
+
+const inputPadding = 10;
+
+const inputHeight = 65;
 
 const borderBottomStyle = {
   borderBottomWidth: 0.5,
@@ -106,15 +118,9 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
   return (
     <View style={[globalStyles.pageStyle, { padding: 0 }]}>
       <View style={styles.valueView}>
-        <Text style={{ fontSize: 18, fontWeight: "400", color: "#fff" }}>
-          Valor
-        </Text>
+        <Text style={styles.valueTextStyle}>Valor</Text>
         <CurrencyInput
-          style={{
-            fontSize: 28,
-            fontWeight: "bold",
-            color: "#fff",
-          }}
+          style={styles.currencyInputStyle}
           value={amount}
           onChangeValue={(value) => setAmount(value ?? 0)}
           prefix='R$'
@@ -124,97 +130,110 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
           minValue={0}
         />
       </View>
-      <View style={styles.outterCardView}>
-        <View>
-          <View style={styles.paidSwitchView}>
-            <Text style={styles.inputText}>Pago</Text>
-            <Switch
-              trackColor={{
-                false: palette.grey.light,
-                true: palette.primary.lighter,
-              }}
-              thumbColor={paid ? palette.secondary.main : palette.grey.main}
-              onValueChange={() => setPaid((prevState) => !prevState)}
-              value={paid}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollViewStyle}
+      >
+        <View style={styles.parentCard}>
+          <View style={styles.childCard}>
+            <View style={styles.paidInputView}>
+              <Text style={inputText}>Pago</Text>
+              <Switch
+                trackColor={{
+                  false: palette.grey.light,
+                  true: palette.grey.light,
+                }}
+                thumbColor={paid ? palette.secondary.main : palette.grey.darker}
+                onValueChange={() => setPaid((prevState) => !prevState)}
+                value={paid}
+              />
+            </View>
+            <TextInput
+              style={styles.textInputStyle}
+              placeholder={
+                !titleInputError ? "Título *" : "Título é obrigatório!"
+              }
+              placeholderTextColor={
+                titleInputError ? "red" : placeholderTextColor
+              }
+              onChangeText={setTitle}
+              value={title}
+              maxLength={20}
+              autoFocus
+              onSubmitEditing={() => amountRef.current?.focus()}
             />
+            <TextInput
+              ref={dateRef}
+              style={styles.textInputStyle}
+              value={format(date, "dd/MM/yyyy HH:mm")}
+              onFocus={() => showDateTimePicker("date")}
+            />
+            <TextInput
+              style={styles.textInputStyle}
+              placeholder='Descrição'
+              placeholderTextColor={placeholderTextColor}
+              onChangeText={setDescription}
+              value={description}
+              multiline
+              ref={descriptionRef}
+            />
+            <View style={styles.submitButton}>
+              <Pressable
+                onPress={sendFormData}
+                android_ripple={{ color: palette.grey.main }}
+              >
+                <Text style={styles.buttonText}>
+                  {edit ? "Atualizar Despesa" : "Adicionar Despesa"}
+                </Text>
+              </Pressable>
+            </View>
+            <Text style={styles.requiredText}>* Campo obrigatório</Text>
+            <View style={{ height: 500 }} />
           </View>
-          <TextInput
-            style={styles.input}
-            placeholder={
-              !titleInputError ? "Título *" : "Título é obrigatório!"
-            }
-            placeholderTextColor={titleInputError ? "red" : inputTextColor}
-            onChangeText={setTitle}
-            value={title}
-            maxLength={20}
-            autoFocus
-            onSubmitEditing={() => amountRef.current?.focus()}
-          />
-          <TextInput
-            ref={dateRef}
-            style={styles.input}
-            value={format(date, "dd/MM/yyyy HH:mm")}
-            onFocus={() => showDateTimePicker("date")}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder='Descrição'
-            placeholderTextColor={inputTextColor}
-            onChangeText={setDescription}
-            value={description}
-            multiline
-            ref={descriptionRef}
-          />
-          <View style={styles.button}>
-            <Pressable
-              onPress={sendFormData}
-              android_ripple={{ color: palette.grey.main }}
-            >
-              <Text style={styles.buttonText}>
-                {edit ? "Atualizar Despesa" : "Adicionar Despesa"}
-              </Text>
-            </Pressable>
-          </View>
-          <Text style={styles.requiredText}>* Campo obrigatório</Text>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  valueView: { justifyContent: "flex-start", width: "100%", padding: 10 },
-  paidSwitchView: {
+  valueView: {
+    width: "100%",
+    padding: 15,
+  },
+  valueTextStyle: { fontSize: 18, fontWeight: "400", color: valueTextColor },
+  currencyInputStyle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: valueTextColor,
+  },
+  scrollViewStyle: {
+    width: "100%",
+  },
+  parentCard: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  childCard: {
+    paddingHorizontal: 15,
+  },
+  paidInputView: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 10,
-    width: "100%",
+    padding: inputPadding,
+    ...borderBottomStyle,
+    height: inputHeight,
+  },
+  textInputStyle: {
+    padding: inputPadding,
+    height: inputHeight,
+    ...inputText,
     ...borderBottomStyle,
   },
-  inputText: {
-    fontSize: 20,
-    color: "#000",
-  },
-  outterCardView: {
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    justifyContent: "center",
-    width: "100%",
-    paddingHorizontal: 15,
-  },
-  input: {
-    width: "100%",
-    padding: 10,
-    paddingVertical: 15,
-    fontSize: 20,
-    color: "#000",
-    ...borderBottomStyle,
-  },
-  button: {
+  submitButton: {
     backgroundColor: palette.primary.darker,
-    width: "100%",
   },
   buttonText: {
     textAlign: "center",
