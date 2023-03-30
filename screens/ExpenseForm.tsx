@@ -2,12 +2,19 @@ import {
   View,
   Text,
   TextInput,
-  Pressable,
   StyleSheet,
   Switch,
   ScrollView,
+  TouchableOpacity,
+  Keyboard,
 } from "react-native";
-import { useEffect, useRef, useState, useContext } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  useLayoutEffect,
+} from "react";
 import CurrencyInput from "react-native-currency-input";
 import { globalStyles, palette } from "../global/styles";
 import { format } from "date-fns";
@@ -17,6 +24,7 @@ import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import axios from "axios";
 import { callToast } from "../helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const placeholderTextColor = palette.grey.light;
 
@@ -48,10 +56,28 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
   const [amountInputError, setAmountInputError] = useState(false);
   const [date, setDate] = useState(edit ? new Date(edit.date) : new Date());
   const [description, setDescription] = useState(edit ? edit.description : "");
+  const [isKeyboardUp, setIsKeyboardUp] = useState(false);
 
-  const amountRef = useRef<TextInput>(null);
+  const amountRef = useRef<CurrencyInput>(null);
+  const titleRef = useRef<TextInput>(null);
   const dateRef = useRef<TextInput>(null);
   const descriptionRef = useRef<TextInput>(null);
+
+  useLayoutEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => setIsKeyboardUp(true)
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => setIsKeyboardUp(false)
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   const { addExpense } = useContext(ExpensesContext);
 
@@ -87,13 +113,13 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
 
     const newExpenseObj: Expense = {
       title: title,
-      amount: amount,
+      amount: amount * 100, // x100 para sintonizar com a lib Dinero
       date: new Date(date).toString(),
       description: description,
       paid: paid,
     };
 
-    if (edit) newExpenseObj.id = edit.id;
+    // if (edit) newExpenseObj.id = edit.id;
 
     if (!edit) postExpense(newExpenseObj);
   }
@@ -106,9 +132,6 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
           setDate(new Date(Number(event.nativeEvent.timestamp)));
           showDateTimePicker("time");
         }
-        if (event.type === "set" && mode === "time") {
-          descriptionRef.current?.focus();
-        }
       },
       mode: mode,
       is24Hour: true,
@@ -116,7 +139,9 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
   }
 
   return (
-    <View style={[globalStyles.pageStyle, { padding: 0 }]}>
+    <View
+      style={[globalStyles.pageStyle, { padding: 0, position: "relative" }]}
+    >
       <View style={styles.valueView}>
         <Text style={styles.valueTextStyle}>Valor</Text>
         <CurrencyInput
@@ -128,6 +153,9 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
           separator=','
           precision={2}
           minValue={0}
+          ref={amountRef}
+          autoFocus
+          onSubmitEditing={() => titleRef.current?.focus()}
         />
       </View>
       <ScrollView
@@ -151,7 +179,7 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
             <TextInput
               style={styles.textInputStyle}
               placeholder={
-                !titleInputError ? "Título *" : "Título é obrigatório!"
+                !titleInputError ? "Título" : "Título é obrigatório!"
               }
               placeholderTextColor={
                 titleInputError ? "red" : placeholderTextColor
@@ -159,8 +187,7 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
               onChangeText={setTitle}
               value={title}
               maxLength={20}
-              autoFocus
-              onSubmitEditing={() => amountRef.current?.focus()}
+              ref={titleRef}
             />
             <TextInput
               ref={dateRef}
@@ -177,21 +204,15 @@ export default function ExpenseForm({ edit }: ExpenseFormPropType) {
               multiline
               ref={descriptionRef}
             />
-            <View style={styles.submitButton}>
-              <Pressable
-                onPress={sendFormData}
-                android_ripple={{ color: palette.grey.main }}
-              >
-                <Text style={styles.buttonText}>
-                  {edit ? "Atualizar Despesa" : "Adicionar Despesa"}
-                </Text>
-              </Pressable>
-            </View>
-            <Text style={styles.requiredText}>* Campo obrigatório</Text>
-            <View style={{ height: 500 }} />
           </View>
         </View>
       </ScrollView>
+      <TouchableOpacity
+        style={[styles.submitIcon, { display: isKeyboardUp ? "none" : "flex" }]}
+        onPress={sendFormData}
+      >
+        <Ionicons name='add-outline' size={55} color='#fff' />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -214,6 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    minHeight: 633,
   },
   childCard: {
     paddingHorizontal: 15,
@@ -232,19 +254,30 @@ const styles = StyleSheet.create({
     ...inputText,
     ...borderBottomStyle,
   },
-  submitButton: {
-    backgroundColor: palette.primary.darker,
-  },
-  buttonText: {
-    textAlign: "center",
-    color: "#000",
-    fontSize: 16,
-    fontWeight: "bold",
-    padding: 10,
-  },
   requiredText: {
     fontSize: 18,
     color: "#000",
     marginTop: 15,
+    textAlign: "center",
+  },
+  submitIcon: {
+    activeOpacity: 0.1,
+    width: 60,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingLeft: 3,
+    borderRadius: 100,
+    backgroundColor: palette.primary.darker,
+    position: "absolute",
+    bottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    elevation: 5,
   },
 });
