@@ -1,6 +1,6 @@
 import { View, Text, SectionList, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getAmount } from "../helpers";
+import { getAmount } from "../global/helpers";
 
 // Tipos
 import { AppNavigationProp, Expense } from "../global/types";
@@ -38,7 +38,7 @@ export default function ExpenseList({
       renderItem={({ item }) => (
         <Pressable
           android_ripple={{ color: palette.grey.main }}
-          onPress={() => navigation.navigate("ExpenseDetails", item)}
+          onPress={() => navigation.navigate("ExpenseForm", item)}
           style={styles.item}
         >
           <Text style={styles.title}>{item.title}</Text>

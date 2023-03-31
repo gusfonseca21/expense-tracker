@@ -7,8 +7,7 @@ import { ExpensesContext } from "../context/ExpensesContext";
 
 // Estilos
 import { globalStyles, palette } from "../global/styles";
-import { Expense } from "../global/types";
-import { getNoExpensesText, groupExpenses } from "../helpers";
+import { getNoExpensesText, groupExpenses } from "../global/helpers";
 
 export default function YearExpenses() {
   const { expenses, loadingExpenses } = useContext(ExpensesContext);

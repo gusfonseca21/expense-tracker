@@ -8,7 +8,7 @@ import { globalStyles, palette } from "../global/styles";
 
 // Tipos
 import ExpenseList from "../components/ExpenseList";
-import { getNoExpensesText, groupExpenses } from "../helpers";
+import { getNoExpensesText, groupExpenses } from "../global/helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
 
 export default function WeekExpenses() {

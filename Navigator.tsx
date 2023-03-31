@@ -7,21 +7,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-import {
-  WeekExpenses,
-  MonthExpenses,
-  YearExpenses,
-  EditExpense,
-  ExpenseDetails,
-} from "./screens";
+import { WeekExpenses, MonthExpenses, YearExpenses } from "./screens";
 
 import { palette } from "./global/styles";
-import NewExpense from "./screens/NewExpense";
 
 import { ExpensesContext } from "./context/ExpensesContext";
 import axios from "axios";
 import { Expense, Navigation } from "./global/types";
-import { callToast } from "./helpers";
+import { callToast } from "./global/helpers";
 
 import { DB_URL } from "./global/database";
 import ExpenseForm from "./screens/ExpenseForm";
@@ -159,29 +152,11 @@ export default function Navigator() {
       <Stack.Navigator
         screenOptions={({ route }) => ({
           headerShown:
-            route.name === "NewExpense" ||
-            route.name === "ExpenseDetails" ||
-            route.name === "EditExpense" ||
-            route.name === "ExpenseForm",
+            route.name === "NewExpense" || route.name === "ExpenseForm",
           ...headerOptions,
         })}
       >
         <Stack.Screen name='Expenses' component={TabNavigator} />
-        <Stack.Screen
-          name='NewExpense'
-          component={NewExpense}
-          options={{ title: "Nova Despesa" }}
-        />
-        <Stack.Screen
-          name='ExpenseDetails'
-          component={ExpenseDetails}
-          options={{ title: "Detalhes da Despesa" }}
-        />
-        <Stack.Screen
-          name='EditExpense'
-          component={EditExpense}
-          options={{ title: "Editar Despesa" }}
-        />
         <Stack.Screen
           name='ExpenseForm'
           component={ExpenseForm}

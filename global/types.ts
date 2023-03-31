@@ -30,9 +30,7 @@ export type RootStackParamList = {
   YearExpenses: undefined;
   NewExpense: undefined;
   Expenses: undefined;
-  ExpenseDetails: Expense;
-  EditExpense: Expense;
-  ExpenseForm: undefined;
+  ExpenseForm: Expense | undefined;
 };
 
 export type Navigation = NavigationProp<ParamListBase>;

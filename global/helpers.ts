@@ -1,6 +1,6 @@
 // Types
 import { groupBy } from "lodash";
-import { Expense, FilterFunctions } from "./global/types";
+import { Expense, FilterFunctions } from "./types";
 import { ToastAndroid } from "react-native";
 import Dinero from "dinero.js";
 
