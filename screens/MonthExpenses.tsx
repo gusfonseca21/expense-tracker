@@ -5,8 +5,8 @@ import ExpenseList from "../components/ExpenseList";
 import { ExpensesContext } from "../context/ExpensesContext";
 
 // Estilos
-import { globalStyles, palette } from "../global/styles";
-import { getNoExpensesText, groupExpenses } from "../global/helpers";
+import { globalStyles, palette } from "../utils/styles";
+import { getNoExpensesText, groupExpenses } from "../utils/helpers";
 
 export default function MonthExpenses() {
   const { expenses, loadingExpenses } = useContext(ExpensesContext);

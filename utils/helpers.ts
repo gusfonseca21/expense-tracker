@@ -47,3 +47,32 @@ export function getNoExpensesText(period: "semana" | "mês" | "ano") {
     period === "semana" ? "nesta" : "neste"
   } ${period} até agora`;
 }
+
+type CompareExpense = Expense & { [key: string]: any };
+
+export function compareExpenses(
+  prevExpense: CompareExpense,
+  currentExpense: CompareExpense
+) {
+  for (const prop in prevExpense) {
+    if (
+      prop !== "id" &&
+      prevExpense.hasOwnProperty(prop) &&
+      prevExpense[prop] !== currentExpense[prop]
+    ) {
+      return false;
+    }
+  }
+
+  for (const prop in currentExpense) {
+    if (
+      prop !== "id" &&
+      currentExpense.hasOwnProperty(prop) &&
+      currentExpense[prop] !== prevExpense[prop]
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}

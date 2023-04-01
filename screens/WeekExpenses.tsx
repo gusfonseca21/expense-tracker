@@ -4,11 +4,11 @@ import { format, getWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 // Estilos
-import { globalStyles, palette } from "../global/styles";
+import { globalStyles, palette } from "../utils/styles";
 
 // Tipos
 import ExpenseList from "../components/ExpenseList";
-import { getNoExpensesText, groupExpenses } from "../global/helpers";
+import { getNoExpensesText, groupExpenses } from "../utils/helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
 
 export default function WeekExpenses() {

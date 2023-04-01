@@ -1,10 +1,10 @@
 import React, { createContext, useState } from "react";
-import { Expense } from "../global/types";
+import { Expense } from "../utils/types";
 
 export const ExpensesContext = createContext<{
   expenses: Expense[];
   addExpense: (expenseObj: Expense) => void;
-  deleteExpense: (expenseId: string) => void;
+  deleteExpense: (expenseObj: Expense) => void;
   setExpenses: (value: Expense[]) => void;
   updateExpenses: (expenseObj: Expense) => void;
   loadingExpenses: boolean;
@@ -27,9 +27,9 @@ const ExpensesProvider = ({ children }: { children: React.ReactNode }) => {
     setExpenses((prevState) => [...prevState, expenseObj]);
   };
 
-  const deleteExpense = (expenseId: string) => {
+  const deleteExpense = (expenseObj: Expense) => {
     setExpenses((prevState) => {
-      return prevState.filter((expense) => expense.id !== expenseId);
+      return prevState.filter((expense) => expense.id !== expenseObj.id);
     });
   };
 

@@ -1,12 +1,12 @@
 import { View, Text, SectionList, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getAmount } from "../global/helpers";
+import { getAmount } from "../utils/helpers";
 
 // Tipos
-import { AppNavigationProp, Expense } from "../global/types";
+import { AppNavigationProp, Expense } from "../utils/types";
 
 // Estilos
-import { palette } from "../global/styles";
+import { palette } from "../utils/styles";
 
 export default function ExpenseList({
   expenses,

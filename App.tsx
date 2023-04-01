@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import ExpensesProvider from "./context/ExpensesContext";
 import Navigator from "./Navigator";
 import { View } from "react-native";
-import { palette } from "./global/styles";
+import { palette } from "./utils/styles";
 
 export default function App() {
   return (

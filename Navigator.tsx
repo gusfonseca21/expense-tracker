@@ -9,14 +9,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { WeekExpenses, MonthExpenses, YearExpenses } from "./screens";
 
-import { palette } from "./global/styles";
+import { palette } from "./utils/styles";
 
 import { ExpensesContext } from "./context/ExpensesContext";
 import axios from "axios";
-import { Expense, Navigation } from "./global/types";
-import { callToast } from "./global/helpers";
+import { Expense, Navigation } from "./utils/types";
+import { callToast } from "./utils/helpers";
 
-import { DB_URL } from "./global/database";
+import { DB_URL } from "./utils/database";
 import ExpenseForm from "./screens/ExpenseForm";
 
 type HeaderOptions = {
