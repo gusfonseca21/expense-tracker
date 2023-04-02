@@ -1,14 +1,6 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-  Pressable,
-} from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useEffect, useState, useContext } from "react";
-import { globalStyles, palette } from "../utils/styles";
+import { globalStyles } from "../utils/styles";
 import { Expense, RootStackParamList } from "../utils/types";
 import {
   useRoute,
@@ -19,7 +11,7 @@ import {
 import type { RouteProp } from "@react-navigation/native";
 import { callToast, compareExpenses } from "../utils/helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
-import Ionicons from "@expo/vector-icons/Ionicons";
+
 import {
   confirmDeleteExpenseAlert,
   editExpense,
@@ -31,8 +23,9 @@ import {
   DescriptionInput,
   PaidInput,
   TitleInput,
-} from "../components/ExpenseFormInputs";
-import { inputBorderBottomStyle } from "../components/ExpenseFormInputs/inputStyles";
+  DeleteExpenseButton,
+  SubmitButton,
+} from "../components/ExpenseForm";
 
 export default function ExpenseForm() {
   const route = useRoute<RouteProp<RootStackParamList, "ExpenseForm">>();
@@ -64,6 +57,7 @@ export default function ExpenseForm() {
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [expenseHasBeenModified, setExpenseHasBeenModified] = useState(false);
+  const [isToastActive, setIsToastActive] = useState(false);
 
   const { addExpense, updateExpenses, deleteExpense } =
     useContext(ExpensesContext);
@@ -78,14 +72,26 @@ export default function ExpenseForm() {
     };
   }
 
+  function toastTimeOut() {
+    setTimeout(() => {
+      setIsToastActive(false);
+    }, 3000);
+  }
+
   function sendFormData() {
+    if (isToastActive) return;
+
     if (!amount) {
       callToast("Defina um preço!", 3);
+      setIsToastActive(true);
+      toastTimeOut();
       return;
     }
 
     if (title.trim() === "") {
       callToast("Defina um título!", 3);
+      setIsToastActive(true);
+      toastTimeOut();
       return;
     }
 
@@ -157,48 +163,19 @@ export default function ExpenseForm() {
               setDescription={setDescription}
             />
             {existingExpense && (
-              <>
-                {isDeleteLoading ? (
-                  <ActivityIndicator
-                    style={styles.deleteExpense}
-                    animating
-                    size='small'
-                    color='red'
-                  />
-                ) : (
-                  <Pressable
-                    style={styles.deleteExpense}
-                    android_ripple={{ color: palette.grey.lighter }}
-                    onPress={deleteExpenseHandler}
-                  >
-                    <Text style={styles.deleteExpenseText}>
-                      Deletar Despesa
-                    </Text>
-                  </Pressable>
-                )}
-              </>
+              <DeleteExpenseButton
+                isDeleteLoading={isDeleteLoading}
+                deleteExpenseHandler={deleteExpenseHandler}
+              />
             )}
           </View>
         </View>
       </ScrollView>
-      <View
-        style={[
-          styles.submitIcon,
-          { display: expenseHasBeenModified ? "none" : "flex" },
-        ]}
-      >
-        {!isSubmitLoading ? (
-          <TouchableOpacity onPress={sendFormData}>
-            <Ionicons name='save' size={30} color='#fff' />
-          </TouchableOpacity>
-        ) : (
-          <ActivityIndicator
-            animating
-            size='large'
-            color={palette.secondary.main}
-          />
-        )}
-      </View>
+      <SubmitButton
+        expenseHasBeenModified={expenseHasBeenModified}
+        isSubmitLoading={isSubmitLoading}
+        sendFormData={sendFormData}
+      />
     </View>
   );
 }
@@ -215,34 +192,5 @@ const styles = StyleSheet.create({
   },
   childCard: {
     paddingHorizontal: 15,
-  },
-  submitIcon: {
-    activeOpacity: 0.1,
-    width: 60,
-    height: 60,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 100,
-    backgroundColor: palette.primary.darker,
-    position: "absolute",
-    bottom: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  deleteExpense: {
-    padding: 15,
-    ...inputBorderBottomStyle,
-  },
-  deleteExpenseText: {
-    textAlign: "center",
-    width: "100%",
-    color: "red",
-    fontSize: 15,
   },
 });
