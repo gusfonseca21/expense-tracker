@@ -1,12 +1,11 @@
 import { View, Text, SectionList, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getAmount } from "../utils/helpers";
-
-// Tipos
 import { AppNavigationProp, Expense } from "../utils/types";
-
-// Estilos
-import { palette } from "../utils/styles";
+import { palette, shadow, textShadow } from "../utils/styles";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function ExpenseList({
   expenses,
@@ -26,9 +25,14 @@ export default function ExpenseList({
     return accumulator + categoryTotal;
   }, 0);
 
+  function formatDate(date: string) {
+    return format(new Date(date), "d 'de' MMMM 'às' HH:mm", { locale: ptBR });
+  }
+
   return (
     <SectionList
-      style={styles.section}
+      showsVerticalScrollIndicator={false}
+      style={styles.sectionStyle}
       ListHeaderComponent={() => (
         <Text style={styles.totalHeaderText}>{`Total: ${getAmount(
           totalAmount
@@ -36,69 +40,103 @@ export default function ExpenseList({
       )}
       sections={expenses}
       renderItem={({ item }) => (
-        <Pressable
-          android_ripple={{ color: palette.grey.main }}
-          onPress={() => navigation.navigate("ExpenseForm", item)}
-          style={styles.item}
-        >
-          <Text style={styles.title}>{item.title}</Text>
-          <View style={styles.priceBox}>
+        <View style={styles.itemView}>
+          <Pressable
+            android_ripple={{ color: palette.grey.main }}
+            onPress={() => navigation.navigate("ExpenseForm", item)}
+            style={styles.pressableItem}
+          >
+            <View style={styles.leftView}>
+              <Text style={styles.itemTitle}>{item.title}</Text>
+              <View style={styles.iconsView}>
+                <Ionicons
+                  name='logo-usd'
+                  size={20}
+                  color={item.paid ? "green" : "red"}
+                />
+                {item.description !== "" && (
+                  <Ionicons
+                    name='ellipsis-horizontal'
+                    size={20}
+                    color={palette.primary.main}
+                  />
+                )}
+              </View>
+            </View>
             <Text style={styles.priceText}>{getAmount(item.amount)}</Text>
-          </View>
-        </Pressable>
+            <View style={styles.dateText}>
+              <Text>{formatDate(item.date)}</Text>
+            </View>
+          </Pressable>
+        </View>
       )}
-      renderSectionHeader={({ section: { title } }) => (
-        <Text style={styles.header}>{title}</Text>
-      )}
+      renderSectionHeader={({ section: { title } }) => {
+        return <Text style={styles.headerSection}>{title}</Text>;
+      }}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  section: {
+  sectionStyle: {
     width: "100%",
   },
   totalHeaderText: {
+    marginTop: 5,
     fontSize: 25,
     color: "#fff",
     fontWeight: "500",
     textAlign: "center",
-    padding: 5,
     marginBottom: 3,
+    ...textShadow,
   },
-  item: {
-    backgroundColor: palette.primary.darker,
+  itemView: {
+    borderRadius: 20,
+    overflow: "hidden",
+    marginBottom: 10,
+    ...shadow,
+  },
+  pressableItem: {
+    backgroundColor: "#fff",
     paddingHorizontal: 12,
-    paddingVertical: 6,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 5,
+    height: 100,
+    position: "relative",
   },
-  header: {
+  leftView: { gap: 10 },
+  iconsView: {
+    flexDirection: "row",
+    gap: 5,
+  },
+
+  itemTitle: {
+    fontSize: 24,
+    color: palette.primary.main,
+  },
+  priceText: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: palette.primary.darker,
+  },
+  dateText: {
+    position: "absolute",
+    top: 0,
+    right: "50%",
+    transform: [{ translateX: 42 }],
+  },
+  headerSection: {
     fontSize: 20,
-    backgroundColor: palette.secondary.main,
+    backgroundColor: palette.primary.darker,
+    color: "#fff",
     marginTop: 5,
-    marginBottom: 5,
+    marginBottom: 10,
+    borderRadius: 10,
     fontWeight: "bold",
     padding: 1,
     textAlign: "center",
     textTransform: "capitalize",
-  },
-  title: {
-    fontSize: 20,
-    color: "#fff",
-  },
-  priceBox: {
-    backgroundColor: "#fff",
-    paddingHorizontal: 7,
-    paddingVertical: 5,
-    minWidth: 85,
-  },
-  priceText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: palette.primary.darker,
-    textAlign: "center",
+    ...shadow,
   },
 });

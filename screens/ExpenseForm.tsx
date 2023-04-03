@@ -101,7 +101,6 @@ export default function ExpenseForm() {
       expense: expenseObj,
       isSubmitLoading,
       setIsSubmitLoading,
-      navigation,
     };
 
     if (existingExpense) {
@@ -114,6 +113,7 @@ export default function ExpenseForm() {
       postExpense({
         ...expenseOptions,
         contextFunction: addExpense,
+        navigation,
       });
     }
   }
@@ -141,9 +141,7 @@ export default function ExpenseForm() {
   }
 
   return (
-    <View
-      style={[globalStyles.pageStyle, { padding: 0, position: "relative" }]}
-    >
+    <View style={[globalStyles.pageStyle, styles.customPageStyle]}>
       <AmountInput
         amount={amount}
         setAmount={setAmount}
@@ -181,6 +179,11 @@ export default function ExpenseForm() {
 }
 
 const styles = StyleSheet.create({
+  customPageStyle: {
+    paddingHorizontal: 0,
+    paddingTop: 0,
+    position: "relative",
+  },
   scrollViewStyle: {
     width: "100%",
   },

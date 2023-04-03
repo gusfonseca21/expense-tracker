@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React from "react";
-import { palette } from "../../utils/styles";
+import { palette, shadow } from "../../utils/styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 type SubmitButtonProps = {
@@ -52,13 +52,6 @@ const styles = StyleSheet.create({
     backgroundColor: palette.primary.darker,
     position: "absolute",
     bottom: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 5,
+    ...shadow,
   },
 });

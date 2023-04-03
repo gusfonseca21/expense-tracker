@@ -10,7 +10,7 @@ type SubmitExpensesParams = {
   isSubmitLoading: boolean;
   setIsSubmitLoading: (value: boolean) => void;
   contextFunction: (expense: Expense) => void;
-  navigation: NavigationProp<ParamListBase>;
+  navigation?: NavigationProp<ParamListBase>;
 };
 
 export function postExpense({
@@ -29,7 +29,7 @@ export function postExpense({
       callToast("Sua despesa foi salva com sucesso!", 2);
       expense.id = response.data.name;
       contextFunction(expense);
-      navigation.goBack();
+      navigation?.goBack();
     })
     .catch((error) => {
       setIsSubmitLoading(false);
@@ -42,7 +42,6 @@ export function editExpense({
   isSubmitLoading,
   setIsSubmitLoading,
   contextFunction,
-  navigation,
 }: SubmitExpensesParams) {
   if (isSubmitLoading) return;
   setIsSubmitLoading(true);
@@ -53,7 +52,6 @@ export function editExpense({
       callToast("Sua despesa foi editada com sucesso!", 2);
       expense.id = expense.id;
       contextFunction(expense);
-      navigation.goBack();
     })
     .catch((error) => {
       setIsSubmitLoading(false);
@@ -83,7 +81,7 @@ export function confirmDeleteExpenseAlert({
               setIsSubmitLoading(false);
               contextFunction(expense);
               callToast("Despesa deletada com sucesso!", 3);
-              navigation.goBack();
+              navigation?.goBack();
             })
             .catch((error) => {
               setIsSubmitLoading(false);

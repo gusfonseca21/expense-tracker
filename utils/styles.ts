@@ -28,13 +28,30 @@ const white = "#fff";
 
 export const palette = { primary, secondary, grey, white };
 
+export const shadow = {
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 5,
+  },
+  shadowOpacity: 1,
+  shadowRadius: 10,
+  elevation: 5,
+};
+
+export const textShadow = {
+  textShadowOffset: { width: 1, height: 1 },
+  textShadowColor: "#000000",
+  textShadowRadius: 3,
+};
+
 export const globalStyles = StyleSheet.create({
   pageStyle: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: palette.primary.main,
-    padding: 20,
+    paddingHorizontal: 15,
   },
   noExpensesText: {
     fontSize: 25,
