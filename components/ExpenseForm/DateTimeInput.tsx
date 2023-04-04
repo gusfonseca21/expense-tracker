@@ -1,5 +1,5 @@
 import { View, TextInput } from "react-native";
-import React from "react";
+import { useRef } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { inputIconColor, inputStyles } from "./inputStyles";
 import { format } from "date-fns";
@@ -11,11 +11,16 @@ type DateTimeInputProps = {
 };
 
 export default function DateTimeInput({ date, setDate }: DateTimeInputProps) {
+  const timeInputRef = useRef<TextInput | null>(null);
+
   function showDateTimePicker(mode: "date" | "time") {
     DateTimePickerAndroid.open({
       value: date,
       onChange: (event) => {
         setDate(new Date(Number(event.nativeEvent.timestamp)));
+        if (event.type === "set" && mode === "date") {
+          timeInputRef.current?.focus();
+        }
       },
       mode: mode,
       is24Hour: true,
@@ -44,6 +49,7 @@ export default function DateTimeInput({ date, setDate }: DateTimeInputProps) {
       >
         <Ionicons name='time' size={20} color={inputIconColor} />
         <TextInput
+          ref={timeInputRef}
           style={inputStyles.textInputStyle}
           value={format(date, "HH:mm")}
           onFocus={() => showDateTimePicker("time")}

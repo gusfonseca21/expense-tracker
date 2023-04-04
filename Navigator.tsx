@@ -1,5 +1,4 @@
 import { Pressable, View, StyleSheet } from "react-native";
-import { useContext, useEffect } from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -11,12 +10,8 @@ import { WeekExpenses, MonthExpenses, YearExpenses } from "./screens";
 
 import { palette } from "./utils/styles";
 
-import { ExpensesContext } from "./context/ExpensesContext";
-import axios from "axios";
-import { Expense, Navigation } from "./utils/types";
-import { callToast } from "./utils/helpers";
+import { Navigation } from "./utils/types";
 
-import { DB_URL } from "./utils/database";
 import ExpenseForm from "./screens/ExpenseForm";
 
 type HeaderOptions = {
@@ -123,30 +118,6 @@ function TabNavigator() {
 }
 
 export default function Navigator() {
-  const { setExpenses, setLoadingExpenses } = useContext(ExpensesContext);
-
-  useEffect(() => {
-    setLoadingExpenses(true);
-    axios
-      .get(`${DB_URL}expenses.json`)
-      .then((response) => {
-        const transformedData: Expense[] = Object.keys(response.data).map(
-          (key) => {
-            return { ...response.data[key], id: key };
-          }
-        );
-        setExpenses(transformedData);
-        setLoadingExpenses(false);
-      })
-      .catch((error) => {
-        callToast(
-          `Houve um erro ao tentar carregar suas despesas: ${error.message}`,
-          3
-        );
-        setLoadingExpenses(false);
-      });
-  }, []);
-
   return (
     <NavigationContainer>
       <Stack.Navigator

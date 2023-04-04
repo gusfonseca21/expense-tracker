@@ -20,7 +20,7 @@ export default function DescriptionInput({
     <View style={inputStyles.inputIconView}>
       <Ionicons name='ellipsis-horizontal' size={20} color={inputIconColor} />
       <TextInput
-        style={inputStyles.textInputStyle}
+        style={[inputStyles.textInputStyle, { width: "90%" }]}
         placeholder='Descrição'
         placeholderTextColor={placeholderTextColor}
         onChangeText={setDescription}

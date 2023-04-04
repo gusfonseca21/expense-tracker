@@ -2,7 +2,8 @@
 import { groupBy } from "lodash";
 import { Expense, FilterFunctions } from "./types";
 import { ToastAndroid } from "react-native";
-import Dinero from "dinero.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { EXPENSE_STORAGE } from "./database";
 
 export function groupExpenses(
   expenses: Expense[],
@@ -38,10 +39,6 @@ export function callToast(message: string, seconds: number) {
   );
 }
 
-export function getAmount(amount: number) {
-  return Dinero({ amount: amount, currency: "BRL" }).toFormat("$0,0.00");
-}
-
 export function getNoExpensesText(period: "semana" | "mês" | "ano") {
   return `Nenhum gasto ${
     period === "semana" ? "nesta" : "neste"
@@ -75,4 +72,28 @@ export function compareExpenses(
   }
 
   return true;
+}
+
+export function generateRandomId() {
+  const randomString = Math.random().toString(36).substring(2, 8);
+  const timestamp = Date.now().toString(36).substring(4, 12);
+  return `${randomString}-${timestamp}`;
+}
+
+export function parseAsyncData(jsonData: string) {
+  return jsonData ? JSON.parse(jsonData) : [];
+}
+
+export async function clearAllExpenses() {
+  await AsyncStorage.removeItem(EXPENSE_STORAGE);
+}
+
+export async function clearNullAsyncStorage() {
+  AsyncStorage.getItem(EXPENSE_STORAGE).then((response) => {
+    if (response) {
+      const existingData = parseAsyncData(response);
+      const cleanData = existingData.filter((data: Expense | null) => data);
+      AsyncStorage.setItem(EXPENSE_STORAGE, JSON.stringify(cleanData));
+    }
+  });
 }

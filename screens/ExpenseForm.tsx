@@ -9,10 +9,8 @@ import {
   ParamListBase,
 } from "@react-navigation/native";
 import type { RouteProp } from "@react-navigation/native";
-import { callToast, compareExpenses } from "../utils/helpers";
+import { callToast, compareExpenses, generateRandomId } from "../utils/helpers";
 import { ExpensesContext } from "../context/ExpensesContext";
-import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
 import {
   confirmDeleteExpenseAlert,
   editExpense,
@@ -49,7 +47,7 @@ export default function ExpenseForm() {
   );
   const [amount, setAmount] = useState<number>(
     existingExpense ? existingExpense.amount : 0
-  ); // / 100 para sintonizar com a lib Dinero
+  );
   const [date, setDate] = useState(
     existingExpense ? new Date(existingExpense.date) : new Date()
   );
@@ -65,13 +63,13 @@ export default function ExpenseForm() {
     useContext(ExpensesContext);
 
   function mountExpenseObj(): Expense {
-    const fixedAmount = Number((amount * 100).toFixed(2));
     return {
       title: title,
-      amount: fixedAmount, // x100 para sintonizar com a lib Dinero
+      amount: amount,
       date: new Date(date).toString(),
       description: description,
       paid: paid,
+      id: generateRandomId(),
     };
   }
 
@@ -113,8 +111,6 @@ export default function ExpenseForm() {
         contextFunction: updateExpenses,
       });
     } else {
-      // CONTINUAR AQUI
-      // expenseOptions.expense.id = uuidv4();
       postExpense({
         ...expenseOptions,
         contextFunction: addExpense,

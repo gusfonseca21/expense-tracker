@@ -1,11 +1,11 @@
 import { View, Text, SectionList, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getAmount } from "../utils/helpers";
 import { AppNavigationProp, Expense } from "../utils/types";
 import { palette, shadow, textShadow } from "../utils/styles";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import CurrencyText from "./CurrencyText";
 
 export default function ExpenseList({
   expenses,
@@ -34,9 +34,7 @@ export default function ExpenseList({
       showsVerticalScrollIndicator={false}
       style={styles.sectionStyle}
       ListHeaderComponent={() => (
-        <Text style={styles.totalHeaderText}>{`Total: ${getAmount(
-          totalAmount
-        )}`}</Text>
+        <CurrencyText amount={totalAmount} style={styles.totalHeaderText} />
       )}
       sections={expenses}
       renderItem={({ item }) => (
@@ -63,7 +61,7 @@ export default function ExpenseList({
                 )}
               </View>
             </View>
-            <Text style={styles.priceText}>{getAmount(item.amount)}</Text>
+            <CurrencyText amount={item.amount} style={styles.priceText} />
             <View style={styles.dateText}>
               <Text>{formatDate(item.date)}</Text>
             </View>
