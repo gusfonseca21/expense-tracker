@@ -11,7 +11,9 @@ type PaidInputProps = {
 
 export default function PaidInput({ paid, setPaid }: PaidInputProps) {
   return (
-    <View style={inputStyles.paidInputView}>
+    <View
+      style={[inputStyles.paidInputView, { zIndex: 100, paddingRight: 6.3 }]}
+    >
       <View style={[inputStyles.inputIconView, { borderBottomWidth: 0 }]}>
         <Ionicons name='logo-usd' size={22} color={paid ? "green" : "red"} />
         <Text style={inputText}>Pago</Text>

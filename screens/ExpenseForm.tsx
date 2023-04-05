@@ -25,7 +25,9 @@ import {
   TitleInput,
   DeleteExpenseButton,
   SubmitButton,
+  PaymentMethod,
 } from "../components/ExpenseForm";
+import { FlatList } from "react-native";
 
 export default function ExpenseForm() {
   const route = useRoute<RouteProp<RootStackParamList, "ExpenseForm">>();
@@ -58,6 +60,8 @@ export default function ExpenseForm() {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [expenseHasBeenModified, setExpenseHasBeenModified] = useState(false);
   const [isToastActive, setIsToastActive] = useState(false);
+  const [paymentPickerOpen, setPaymentPickerOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState(null);
 
   const { addExpense, updateExpenses, deleteExpense } =
     useContext(ExpensesContext);
@@ -148,28 +152,36 @@ export default function ExpenseForm() {
         setAmount={setAmount}
         existingExpense={existingExpense}
       />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.scrollViewStyle}
-      >
-        <View style={styles.parentCard}>
-          <View style={styles.childCard}>
-            <PaidInput paid={paid} setPaid={setPaid} />
-            <TitleInput title={title} setTitle={setTitle} />
-            <DateTimeInput date={date} setDate={setDate} />
-            <DescriptionInput
-              description={description}
-              setDescription={setDescription}
-            />
-            {existingExpense && (
-              <DeleteExpenseButton
-                isDeleteLoading={isDeleteLoading}
-                deleteExpenseHandler={deleteExpenseHandler}
+      <FlatList
+        data={[{ key: "parentCard" }]}
+        renderItem={() => (
+          <View style={styles.parentCard}>
+            <View style={styles.childCard}>
+              <PaidInput paid={paid} setPaid={setPaid} />
+              <TitleInput title={title} setTitle={setTitle} />
+              <DateTimeInput date={date} setDate={setDate} />
+              <PaymentMethod
+                open={paymentPickerOpen}
+                setOpen={setPaymentPickerOpen}
+                value={paymentMethod}
+                setValue={setPaymentMethod}
               />
-            )}
+              <DescriptionInput
+                description={description}
+                setDescription={setDescription}
+              />
+              {existingExpense && (
+                <DeleteExpenseButton
+                  isDeleteLoading={isDeleteLoading}
+                  deleteExpenseHandler={deleteExpenseHandler}
+                />
+              )}
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        )}
+        showsVerticalScrollIndicator={false}
+        style={styles.flatListStyle}
+      />
       <SubmitButton
         expenseHasBeenModified={expenseHasBeenModified}
         isSubmitLoading={isSubmitLoading}
@@ -185,7 +197,7 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     position: "relative",
   },
-  scrollViewStyle: {
+  flatListStyle: {
     width: "100%",
   },
   parentCard: {
