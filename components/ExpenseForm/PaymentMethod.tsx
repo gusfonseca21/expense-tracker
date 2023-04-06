@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { View, Text, Animated, ScrollView } from "react-native";
+import { Dispatch, SetStateAction, useEffect, useState, useRef } from "react";
 import { inputStyles, inputText } from "./inputStyles";
 import { Image } from "react-native";
 import { palette } from "../../utils/styles";
@@ -24,7 +24,9 @@ const logoStyle = {
   width: 24,
 };
 
-const initialCardPosition = -400;
+const fullHeightViewPos = 94;
+
+const startBottomViewPos = { x: 0, y: 300 };
 
 export default function PaymentMethod({
   open,
@@ -54,47 +56,72 @@ export default function PaymentMethod({
       logo: () => <Image source={logoCredito} style={logoStyle} />,
     },
   ]);
-  const [bottomPosition, setBottomPosition] = useState(initialCardPosition);
 
-  useEffect(() => {
-    if (!open) setBottomPosition(initialCardPosition);
-  }, [open]);
+  const viewRef = useRef(null);
 
-  function swipeHandler(direction: string) {
+  const animatedValue = useRef(new Animated.ValueXY()).current;
+
+  function swipeCompleteHandler(event: { swipingDirection: string }) {
+    const direction = event.swipingDirection;
     if (direction === "down") setOpen(false);
-    if (direction === "up") setBottomPosition(-110);
   }
 
-  console.log(bottomPosition);
+  function scrollToHandler(event: { y: number }) {
+    if (event.y > 10) {
+      Animated.timing(animatedValue, {
+        toValue: { x: 0, y: fullHeightViewPos },
+        duration: 100,
+        useNativeDriver: true,
+      }).start();
+    }
+  }
+
+  useEffect(() => {
+    animatedValue.setValue(startBottomViewPos);
+  }, [open]);
+
+  const animatedStyle = {
+    transform: animatedValue.getTranslateTransform(),
+  };
 
   return (
     <View style={inputStyles.inputIconView}>
       <Modal
         isVisible={open}
-        onSwipeMove={(value) => console.log(value)}
         scrollHorizontal={false}
-        onSwipeComplete={(event) => {
-          console.log(event);
-          swipeHandler(event.swipingDirection);
-        }}
-        swipeDirection={["up", "down"]}
+        onSwipeComplete={(event) => swipeCompleteHandler(event)}
+        swipeDirection={["down"]}
         style={{ flex: 1, margin: 0, position: "relative" }}
         onBackdropPress={() => setOpen(false)}
         onBackButtonPress={() => setOpen(false)}
+        scrollTo={(event) => scrollToHandler(event)}
+        scrollOffset={10}
       >
-        <View
-          style={{
-            backgroundColor: "white",
-            width: "100%",
-            height: "100%",
-            position: "absolute",
-            bottom: bottomPosition,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-          }}
+        <Animated.View
+          ref={viewRef}
+          style={[
+            {
+              backgroundColor: "white",
+              width: "100%",
+              height: 1200,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              // transform: animatedValue.getTranslateTransform(),
+            },
+            animatedStyle,
+          ]}
         >
-          <Text>Oi</Text>
-        </View>
+          <ScrollView style={{ height: "100%" }}>
+            <View
+              style={{
+                height: 300,
+                width: 300,
+                bottom: -210,
+                backgroundColor: "red",
+              }}
+            />
+          </ScrollView>
+        </Animated.View>
       </Modal>
       <Pressable onPress={() => setOpen(true)}>
         <Text
@@ -103,12 +130,6 @@ export default function PaymentMethod({
           Forma de pagamento
         </Text>
       </Pressable>
-      {/* <TextInput
-        style={inputStyles.textInputStyle}
-        value={"teste"}
-        onFocus={() => setOpen(true)}
-        disable
-      /> */}
     </View>
   );
 }
