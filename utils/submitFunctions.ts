@@ -26,25 +26,29 @@ export function postExpense({
   setIsSubmitLoading(true);
   AsyncStorage.getItem(EXPENSE_STORAGE)
     .then((response) => {
+      let data: Expense[];
+
       if (response) {
         const existingData = parseAsyncData(response);
-        const data = [...existingData, expense];
-
-        AsyncStorage.setItem(EXPENSE_STORAGE, JSON.stringify(data))
-          .then(() => {
-            contextFunction(expense);
-            setIsSubmitLoading(false);
-            callToast("Sua despesa foi salva com sucesso!", 3);
-            navigation?.goBack();
-          })
-          .catch((error) => {
-            setIsSubmitLoading(false);
-            callToast(
-              `Houve um erro ao carregar suas despesas: ${error.message}`,
-              4.5
-            );
-          });
+        data = [...existingData, expense];
+      } else {
+        data = [expense];
       }
+
+      AsyncStorage.setItem(EXPENSE_STORAGE, JSON.stringify(data))
+        .then(() => {
+          contextFunction(expense);
+          setIsSubmitLoading(false);
+          callToast("Sua despesa foi salva com sucesso!", 3);
+          navigation?.goBack();
+        })
+        .catch((error) => {
+          setIsSubmitLoading(false);
+          callToast(
+            `Houve um erro ao carregar suas despesas: ${error.message}`,
+            4.5
+          );
+        });
     })
     .catch((error) => {
       setIsSubmitLoading(false);

@@ -1,12 +1,14 @@
 import { getWeek, getMonth, getYear } from "date-fns";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { ImageSourcePropType } from "react-native";
 
 export type Expense = {
   id?: string;
   amount: number;
   date: string;
   title: string;
+  method: string;
   description: string;
   paid: boolean;
 };
@@ -36,3 +38,9 @@ export type RootStackParamList = {
 export type Navigation = NavigationProp<ParamListBase>;
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+export interface PaymentOption {
+  label: string;
+  value: string;
+  logo: ImageSourcePropType;
+}

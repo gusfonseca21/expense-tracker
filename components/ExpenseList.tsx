@@ -1,4 +1,11 @@
-import { View, Text, SectionList, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  SectionList,
+  StyleSheet,
+  Pressable,
+  Image,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AppNavigationProp, Expense } from "../utils/types";
 import { palette, shadow, textShadow } from "../utils/styles";
@@ -6,6 +13,10 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CurrencyText from "./CurrencyText";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
+
+const iconSize = 20;
 
 export default function ExpenseList({
   expenses,
@@ -16,6 +27,8 @@ export default function ExpenseList({
   }[];
 }) {
   const navigation = useNavigation<AppNavigationProp>();
+
+  const { paymentOptions } = useContext(UserContext);
 
   const totalAmount = expenses.reduce((accumulator, category) => {
     const categoryTotal = category.data.reduce((catAccumulator, expense) => {
@@ -29,6 +42,19 @@ export default function ExpenseList({
     return format(new Date(date), "d 'de' MMMM 'às' HH:mm", { locale: ptBR });
   }
 
+  function renderPaymentMethodIcon(value: string) {
+    const selectedMethod = paymentOptions.filter(
+      (option) => option.value === value
+    )[0];
+
+    return (
+      <Image
+        source={selectedMethod.logo}
+        style={{ height: iconSize, width: iconSize }}
+      />
+    );
+  }
+
   return (
     <SectionList
       showsVerticalScrollIndicator={false}
@@ -40,7 +66,7 @@ export default function ExpenseList({
       renderItem={({ item }) => (
         <View style={styles.itemView}>
           <Pressable
-            android_ripple={{ color: palette.grey.main }}
+            android_ripple={{ color: palette.grey.lighter }}
             onPress={() => navigation.navigate("ExpenseForm", item)}
             style={styles.pressableItem}
           >
@@ -49,13 +75,17 @@ export default function ExpenseList({
               <View style={styles.iconsView}>
                 <Ionicons
                   name='logo-usd'
-                  size={20}
+                  size={iconSize}
                   color={item.paid ? "green" : "red"}
+                  style={{ marginRight: -4 }}
                 />
+                <View style={styles.leftView}>
+                  {renderPaymentMethodIcon(item.method)}
+                </View>
                 {item.description !== "" && (
                   <Ionicons
                     name='ellipsis-horizontal'
-                    size={20}
+                    size={iconSize}
                     color={palette.primary.main}
                   />
                 )}

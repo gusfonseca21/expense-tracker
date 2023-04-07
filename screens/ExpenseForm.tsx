@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import { globalStyles } from "../utils/styles";
 import { Expense, RootStackParamList } from "../utils/types";
@@ -27,7 +27,6 @@ import {
   SubmitButton,
   PaymentMethod,
 } from "../components/ExpenseForm";
-import { FlatList } from "react-native";
 
 export default function ExpenseForm() {
   const route = useRoute<RouteProp<RootStackParamList, "ExpenseForm">>();
@@ -61,7 +60,7 @@ export default function ExpenseForm() {
   const [expenseHasBeenModified, setExpenseHasBeenModified] = useState(false);
   const [isToastActive, setIsToastActive] = useState(false);
   const [paymentPickerOpen, setPaymentPickerOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("pix");
 
   const { addExpense, updateExpenses, deleteExpense } =
     useContext(ExpensesContext);
@@ -73,6 +72,7 @@ export default function ExpenseForm() {
       date: new Date(date).toString(),
       description: description,
       paid: paid,
+      method: paymentMethod,
       id: generateRandomId(),
     };
   }
@@ -125,9 +125,11 @@ export default function ExpenseForm() {
 
   useEffect(() => {
     if (existingExpense) {
-      const expenseObj = mountExpenseObj();
+      const currentExpense = mountExpenseObj();
 
-      setExpenseHasBeenModified(compareExpenses(existingExpense, expenseObj));
+      setExpenseHasBeenModified(
+        compareExpenses(existingExpense, currentExpense)
+      );
     }
   }, [title, amount, date, description, paid]);
 

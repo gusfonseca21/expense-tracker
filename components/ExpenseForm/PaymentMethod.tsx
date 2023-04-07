@@ -1,32 +1,33 @@
-import { View, Text, Animated, ScrollView } from "react-native";
-import { Dispatch, SetStateAction, useEffect, useState, useRef } from "react";
-import { inputStyles, inputText } from "./inputStyles";
-import { Image } from "react-native";
-import { palette } from "../../utils/styles";
-import Modal from "react-native-modal";
-import { TextInput } from "react-native";
-import { Pressable } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  Image,
+  FlatList,
+} from "react-native";
 
-const logoPix = require("../../assets/icons/logo-pix.png");
-const logoDinheiro = require("../../assets/icons/logo-dinheiro.png");
-const logoDebito = require("../../assets/icons/logo-debito.png");
-const logoCredito = require("../../assets/icons/logo-credito.png");
+import { Dispatch, SetStateAction, useContext } from "react";
+
+import { inputStyles } from "./inputStyles";
+import Modal from "react-native-modal";
+import { inputBorderBottomStyle } from "./inputStyles";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { palette } from "../../utils/styles";
+import { UserContext } from "../../context/UserContext";
+import { PaymentOption } from "../../utils/types";
 
 type PaymentMethodProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   value: string | null;
-  setValue: Dispatch<SetStateAction<null>>;
+  setValue: Dispatch<SetStateAction<string>>;
 };
 
 const logoStyle = {
-  height: 24,
-  width: 24,
+  height: 20,
+  width: 20,
 };
-
-const fullHeightViewPos = 94;
-
-const startBottomViewPos = { x: 0, y: 300 };
 
 export default function PaymentMethod({
   open,
@@ -34,102 +35,115 @@ export default function PaymentMethod({
   value,
   setValue,
 }: PaymentMethodProps) {
-  const [paymentOptions, setPaymentOptions] = useState([
-    {
-      label: "PIX",
-      value: "pix",
-      logo: () => <Image source={logoPix} style={logoStyle} />,
-    },
-    {
-      label: "Dinheiro",
-      value: "dinheiro",
-      logo: () => <Image source={logoDinheiro} style={logoStyle} />,
-    },
-    {
-      label: "Débito",
-      value: "debito",
-      logo: () => <Image source={logoDebito} style={logoStyle} />,
-    },
-    {
-      label: "Crédito",
-      value: "credito",
-      logo: () => <Image source={logoCredito} style={logoStyle} />,
-    },
-  ]);
+  const { paymentOptions } = useContext(UserContext);
 
-  const viewRef = useRef(null);
-
-  const animatedValue = useRef(new Animated.ValueXY()).current;
-
-  function swipeCompleteHandler(event: { swipingDirection: string }) {
-    const direction = event.swipingDirection;
-    if (direction === "down") setOpen(false);
+  function renderOptionIconText(option: PaymentOption) {
+    return (
+      <View style={styles.leftOptionView}>
+        <Image source={option.logo} style={logoStyle} />
+        <Text
+          style={[inputStyles.textInputStyle, { textAlignVertical: "center" }]}
+        >
+          {option.label}
+        </Text>
+      </View>
+    );
   }
 
-  function scrollToHandler(event: { y: number }) {
-    if (event.y > 10) {
-      Animated.timing(animatedValue, {
-        toValue: { x: 0, y: fullHeightViewPos },
-        duration: 100,
-        useNativeDriver: true,
-      }).start();
+  function renderItemComponent(item: PaymentOption) {
+    function onPressOptionHandler() {
+      setValue(item.value);
+      setOpen(false);
     }
+
+    return (
+      <Pressable
+        android_ripple={{ color: palette.grey.lighter }}
+        onPress={onPressOptionHandler}
+      >
+        <View style={styles.itemView}>
+          {renderOptionIconText(item)}
+          <Ionicons
+            name='checkmark-circle'
+            color={palette.primary.main}
+            size={24}
+            style={{ opacity: value === item.value ? 1 : 0 }}
+          />
+        </View>
+      </Pressable>
+    );
   }
 
-  useEffect(() => {
-    animatedValue.setValue(startBottomViewPos);
-  }, [open]);
+  function renderSelectedOption() {
+    const selectedOption = paymentOptions.filter(
+      (option) => option.value === value
+    )[0];
 
-  const animatedStyle = {
-    transform: animatedValue.getTranslateTransform(),
-  };
+    return renderOptionIconText(selectedOption);
+  }
 
   return (
     <View style={inputStyles.inputIconView}>
       <Modal
         isVisible={open}
         scrollHorizontal={false}
-        onSwipeComplete={(event) => swipeCompleteHandler(event)}
+        onSwipeComplete={() => setOpen(false)}
         swipeDirection={["down"]}
-        style={{ flex: 1, margin: 0, position: "relative" }}
+        style={{ flex: 1, margin: 0, justifyContent: "flex-end" }}
         onBackdropPress={() => setOpen(false)}
         onBackButtonPress={() => setOpen(false)}
-        scrollTo={(event) => scrollToHandler(event)}
-        scrollOffset={10}
+        animationOut='slideOutDown'
+        backdropTransitionOutTiming={0}
       >
-        <Animated.View
-          ref={viewRef}
-          style={[
-            {
-              backgroundColor: "white",
-              width: "100%",
-              height: 1200,
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              // transform: animatedValue.getTranslateTransform(),
-            },
-            animatedStyle,
-          ]}
-        >
-          <ScrollView style={{ height: "100%" }}>
-            <View
-              style={{
-                height: 300,
-                width: 300,
-                bottom: -210,
-                backgroundColor: "red",
-              }}
-            />
-          </ScrollView>
-        </Animated.View>
+        <View style={styles.flatListWrapper}>
+          <FlatList
+            data={paymentOptions}
+            renderItem={({ item }) => renderItemComponent(item)}
+            ListFooterComponent={() => (
+              <Pressable android_ripple={{ color: palette.grey.lighter }}>
+                <View style={styles.itemView}>
+                  <Ionicons name='add-circle-outline' size={22} />
+                  <Text
+                    style={[
+                      inputStyles.textInputStyle,
+                      { textAlignVertical: "center" },
+                    ]}
+                  >
+                    Adicionar forma de pagamento
+                  </Text>
+                </View>
+              </Pressable>
+            )}
+          />
+        </View>
       </Modal>
-      <Pressable onPress={() => setOpen(true)}>
-        <Text
-          style={[inputStyles.textInputStyle, { textAlignVertical: "center" }]}
-        >
-          Forma de pagamento
-        </Text>
+      <Pressable onPress={() => setOpen(true)} style={{ flex: 1 }}>
+        {renderSelectedOption()}
       </Pressable>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flatListWrapper: {
+    backgroundColor: "white",
+    width: "100%",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: "hidden",
+  },
+  itemView: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    ...inputBorderBottomStyle,
+  },
+  leftOptionView: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    width: "50%",
+  },
+});
