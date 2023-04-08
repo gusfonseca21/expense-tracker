@@ -28,6 +28,7 @@
     "lodash.groupby": "^4.6.0",
     "react": "18.2.0",
     "react-native": "0.71.6",
+    "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-currency-input": "^1.1.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-modal": "^13.0.1",

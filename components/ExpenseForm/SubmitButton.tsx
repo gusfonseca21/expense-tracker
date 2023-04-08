@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import React from "react";
 import { palette, shadow } from "../../utils/styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 

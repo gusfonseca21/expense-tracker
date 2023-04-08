@@ -79,9 +79,11 @@ export default function ExpenseList({
                   color={item.paid ? "green" : "red"}
                   style={{ marginRight: -4 }}
                 />
-                <View style={styles.leftView}>
-                  {renderPaymentMethodIcon(item.method)}
-                </View>
+                {item.method && (
+                  <View style={styles.leftView}>
+                    {renderPaymentMethodIcon(item.method)}
+                  </View>
+                )}
                 {item.description !== "" && (
                   <Ionicons
                     name='ellipsis-horizontal'

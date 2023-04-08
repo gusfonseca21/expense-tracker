@@ -2,7 +2,8 @@ import React, { createContext, useEffect, useState } from "react";
 import { Expense } from "../utils/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { callToast } from "../utils/helpers";
-import { EXPENSE_STORAGE } from "../utils/database";
+import { EXPENSES_STORAGE } from "../utils/database";
+import { getExpenses } from "../utils/Async Storage Functions/submitExpenses";
 
 export const ExpensesContext = createContext<{
   expenses: Expense[];
@@ -27,23 +28,8 @@ const ExpensesProvider = ({ children }: { children: React.ReactNode }) => {
   const [loadingExpenses, setLoadingExpenses] = useState(true);
 
   useEffect(() => {
-    fetchData();
+    getExpenses(setLoadingExpenses, setExpenses);
   }, []);
-
-  function fetchData() {
-    AsyncStorage.getItem(EXPENSE_STORAGE)
-      .then((response) => {
-        setLoadingExpenses(false);
-        response && setExpenses(JSON.parse(response));
-      })
-      .catch((error) => {
-        callToast(
-          `Houve um erro ao tentar carregar suas despesas: ${error.message}`,
-          3
-        );
-        setLoadingExpenses(false);
-      });
-  }
 
   const addExpense = (expenseObj: Expense) => {
     setExpenses((prevState) => [...prevState, expenseObj]);

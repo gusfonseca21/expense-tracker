@@ -8,7 +8,7 @@ export type Expense = {
   amount: number;
   date: string;
   title: string;
-  method: string;
+  method: string | null;
   description: string;
   paid: boolean;
 };
@@ -43,4 +43,5 @@ export interface PaymentOption {
   label: string;
   value: string;
   logo: ImageSourcePropType;
+  isFavourite: boolean;
 }

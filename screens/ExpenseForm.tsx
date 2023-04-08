@@ -1,7 +1,7 @@
 import { View, StyleSheet, FlatList } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import { globalStyles } from "../utils/styles";
-import { Expense, RootStackParamList } from "../utils/types";
+import { Expense, PaymentOption, RootStackParamList } from "../utils/types";
 import {
   useRoute,
   useNavigation,
@@ -15,7 +15,7 @@ import {
   confirmDeleteExpenseAlert,
   editExpense,
   postExpense,
-} from "../utils/submitFunctions";
+} from "../utils/Async Storage Functions/submitExpenses";
 
 import {
   AmountInput,
@@ -27,12 +27,11 @@ import {
   SubmitButton,
   PaymentMethod,
 } from "../components/ExpenseForm";
+import { UserContext } from "../context/UserContext";
 
 export default function ExpenseForm() {
   const route = useRoute<RouteProp<RootStackParamList, "ExpenseForm">>();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-
-  const existingExpense = route.params;
 
   useEffect(() => {
     if (existingExpense)
@@ -40,6 +39,12 @@ export default function ExpenseForm() {
     else navigation.setOptions({ title: "Adicionar Despesa" });
   }, []);
 
+  const { paymentOptions } = useContext(UserContext);
+
+  const defaultPaymentMethod =
+    paymentOptions.find((method) => method.isFavourite)?.value || "pix";
+
+  const [existingExpense, setExistingExpense] = useState(route.params);
   const [paid, setPaid] = useState(
     existingExpense ? existingExpense.paid : true
   );
@@ -55,12 +60,14 @@ export default function ExpenseForm() {
   const [description, setDescription] = useState(
     existingExpense ? existingExpense.description : ""
   );
+  const [paymentMethod, setPaymentMethod] = useState(
+    existingExpense ? existingExpense.method : defaultPaymentMethod
+  );
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [expenseHasBeenModified, setExpenseHasBeenModified] = useState(false);
   const [isToastActive, setIsToastActive] = useState(false);
   const [paymentPickerOpen, setPaymentPickerOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("pix");
 
   const { addExpense, updateExpenses, deleteExpense } =
     useContext(ExpensesContext);
@@ -110,6 +117,7 @@ export default function ExpenseForm() {
 
     if (existingExpense) {
       expenseOptions.expense.id = existingExpense.id;
+      setExistingExpense(expenseOptions.expense);
       editExpense({
         ...expenseOptions,
         contextFunction: updateExpenses,
@@ -127,11 +135,13 @@ export default function ExpenseForm() {
     if (existingExpense) {
       const currentExpense = mountExpenseObj();
 
+      currentExpense.id = existingExpense.id; // Na função de comparação o id será ignorado
+
       setExpenseHasBeenModified(
         compareExpenses(existingExpense, currentExpense)
       );
     }
-  }, [title, amount, date, description, paid]);
+  }, [title, amount, date, description, paid, paymentMethod, sendFormData]);
 
   function deleteExpenseHandler() {
     const expenseToDelete = mountExpenseObj();
@@ -146,6 +156,14 @@ export default function ExpenseForm() {
       navigation,
     });
   }
+
+  useEffect(() => {
+    if (!paid) setPaymentMethod(null);
+    if (paid) {
+      if (existingExpense?.method) setPaymentMethod(existingExpense.method);
+      else setPaymentMethod(defaultPaymentMethod);
+    }
+  }, [paid]);
 
   return (
     <View style={[globalStyles.pageStyle, styles.customPageStyle]}>
@@ -162,12 +180,14 @@ export default function ExpenseForm() {
               <PaidInput paid={paid} setPaid={setPaid} />
               <TitleInput title={title} setTitle={setTitle} />
               <DateTimeInput date={date} setDate={setDate} />
-              <PaymentMethod
-                open={paymentPickerOpen}
-                setOpen={setPaymentPickerOpen}
-                value={paymentMethod}
-                setValue={setPaymentMethod}
-              />
+              {paymentMethod && (
+                <PaymentMethod
+                  open={paymentPickerOpen}
+                  setOpen={setPaymentPickerOpen}
+                  value={paymentMethod}
+                  setValue={setPaymentMethod}
+                />
+              )}
               <DescriptionInput
                 description={description}
                 setDescription={setDescription}

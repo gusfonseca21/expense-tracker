@@ -7,7 +7,8 @@ import {
   FlatList,
 } from "react-native";
 
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import { inputStyles } from "./inputStyles";
 import Modal from "react-native-modal";
@@ -21,7 +22,7 @@ type PaymentMethodProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   value: string | null;
-  setValue: Dispatch<SetStateAction<string>>;
+  setValue: Dispatch<SetStateAction<string | null>>;
 };
 
 const logoStyle = {
@@ -35,9 +36,14 @@ export default function PaymentMethod({
   value,
   setValue,
 }: PaymentMethodProps) {
-  const { paymentOptions } = useContext(UserContext);
+  const [selectedValue, setSelectedValue] = useState(value);
 
-  function renderOptionIconText(option: PaymentOption) {
+  const { paymentOptions, favouritePaymentMethod } = useContext(UserContext);
+
+  function renderOptionIconText(
+    option: PaymentOption,
+    selectedOption?: boolean
+  ) {
     return (
       <View style={styles.leftOptionView}>
         <Image source={option.logo} style={logoStyle} />
@@ -46,12 +52,38 @@ export default function PaymentMethod({
         >
           {option.label}
         </Text>
+        {selectedOption && (
+          <View>
+            <BouncyCheckbox
+              size={32}
+              fillColor={palette.secondary.main}
+              isChecked={option.isFavourite}
+              unfillColor='#fff'
+              innerIconStyle={{ borderWidth: 1 }}
+              onPress={() => {
+                option.isFavourite = !option.isFavourite;
+                favouritePaymentMethod(option);
+              }}
+              disableBuiltInState
+              disableText
+              iconComponent={
+                <Ionicons
+                  name={option.isFavourite ? "bookmark" : "bookmark-outline"}
+                  size={20}
+                  color={palette.primary.main}
+                />
+              }
+              style={{ justifyContent: "flex-end", padding: 2 }}
+            />
+          </View>
+        )}
       </View>
     );
   }
 
   function renderItemComponent(item: PaymentOption) {
     function onPressOptionHandler() {
+      setSelectedValue(item.value);
       setValue(item.value);
       setOpen(false);
     }
@@ -67,7 +99,7 @@ export default function PaymentMethod({
             name='checkmark-circle'
             color={palette.primary.main}
             size={24}
-            style={{ opacity: value === item.value ? 1 : 0 }}
+            style={{ opacity: selectedValue === item.value ? 1 : 0 }}
           />
         </View>
       </Pressable>
@@ -75,11 +107,11 @@ export default function PaymentMethod({
   }
 
   function renderSelectedOption() {
-    const selectedOption = paymentOptions.filter(
-      (option) => option.value === value
-    )[0];
+    const selectedOption = paymentOptions.find(
+      (option) => option.value === selectedValue
+    );
 
-    return renderOptionIconText(selectedOption);
+    return selectedOption ? renderOptionIconText(selectedOption, true) : null;
   }
 
   return (
@@ -89,7 +121,7 @@ export default function PaymentMethod({
         scrollHorizontal={false}
         onSwipeComplete={() => setOpen(false)}
         swipeDirection={["down"]}
-        style={{ flex: 1, margin: 0, justifyContent: "flex-end" }}
+        style={{ margin: 0, justifyContent: "flex-end" }}
         onBackdropPress={() => setOpen(false)}
         onBackButtonPress={() => setOpen(false)}
         animationOut='slideOutDown'
@@ -117,7 +149,7 @@ export default function PaymentMethod({
           />
         </View>
       </Modal>
-      <Pressable onPress={() => setOpen(true)} style={{ flex: 1 }}>
+      <Pressable onPress={() => setOpen(true)}>
         {renderSelectedOption()}
       </Pressable>
     </View>
@@ -125,6 +157,13 @@ export default function PaymentMethod({
 }
 
 const styles = StyleSheet.create({
+  leftOptionView: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+    width: "77%",
+  },
   flatListWrapper: {
     backgroundColor: "white",
     width: "100%",
@@ -139,11 +178,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     ...inputBorderBottomStyle,
-  },
-  leftOptionView: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    width: "50%",
   },
 });

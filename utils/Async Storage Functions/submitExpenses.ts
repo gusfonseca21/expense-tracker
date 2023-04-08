@@ -1,10 +1,8 @@
-import axios from "axios";
-import { Expense } from "./types";
-import { EXPENSE_STORAGE } from "./database";
-import { callToast, parseAsyncData } from "./helpers";
+import { Expense } from "../types";
+import { EXPENSES_STORAGE } from "../database";
+import { callToast, parseAsyncData } from "../helpers";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { Alert } from "react-native";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type SubmitExpensesParams = {
@@ -15,6 +13,24 @@ type SubmitExpensesParams = {
   navigation?: NavigationProp<ParamListBase>;
 };
 
+export function getExpenses(
+  setLoadingExpenses: (value: boolean) => void,
+  setExpenses: (value: Expense[]) => void
+) {
+  AsyncStorage.getItem(EXPENSES_STORAGE)
+    .then((response) => {
+      setLoadingExpenses(false);
+      response && setExpenses(JSON.parse(response));
+    })
+    .catch((error) => {
+      callToast(
+        `Houve um erro ao tentar carregar suas despesas: ${error.message}`,
+        3
+      );
+      setLoadingExpenses(false);
+    });
+}
+
 export function postExpense({
   expense,
   isSubmitLoading,
@@ -24,7 +40,7 @@ export function postExpense({
 }: SubmitExpensesParams) {
   if (isSubmitLoading) return;
   setIsSubmitLoading(true);
-  AsyncStorage.getItem(EXPENSE_STORAGE)
+  AsyncStorage.getItem(EXPENSES_STORAGE)
     .then((response) => {
       let data: Expense[];
 
@@ -35,7 +51,7 @@ export function postExpense({
         data = [expense];
       }
 
-      AsyncStorage.setItem(EXPENSE_STORAGE, JSON.stringify(data))
+      AsyncStorage.setItem(EXPENSES_STORAGE, JSON.stringify(data))
         .then(() => {
           contextFunction(expense);
           setIsSubmitLoading(false);
@@ -67,7 +83,7 @@ export function editExpense({
 }: SubmitExpensesParams) {
   if (isSubmitLoading) return;
   setIsSubmitLoading(true);
-  AsyncStorage.getItem(EXPENSE_STORAGE)
+  AsyncStorage.getItem(EXPENSES_STORAGE)
     .then((response) => {
       if (response) {
         const existingData = parseAsyncData(response);
@@ -78,7 +94,7 @@ export function editExpense({
           })
         );
 
-        AsyncStorage.setItem(EXPENSE_STORAGE, newData)
+        AsyncStorage.setItem(EXPENSES_STORAGE, newData)
           .then(() => {
             setIsSubmitLoading(false);
             contextFunction(expense);
@@ -114,7 +130,7 @@ export function confirmDeleteExpenseAlert({
       {
         text: "Deletar",
         onPress: () => {
-          AsyncStorage.getItem(EXPENSE_STORAGE).then((response) => {
+          AsyncStorage.getItem(EXPENSES_STORAGE).then((response) => {
             if (response) {
               const existingData = parseAsyncData(response);
               const newData = JSON.stringify(
@@ -123,7 +139,7 @@ export function confirmDeleteExpenseAlert({
                     existingExpense.id !== expense.id
                 )
               );
-              AsyncStorage.setItem(EXPENSE_STORAGE, newData)
+              AsyncStorage.setItem(EXPENSES_STORAGE, newData)
                 .then(() => {
                   setIsSubmitLoading(false);
                   contextFunction(expense);
