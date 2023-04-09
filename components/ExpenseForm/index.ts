@@ -5,4 +5,4 @@ export { default as DescriptionInput } from "./DescriptionInput";
 export { default as PaidInput } from "./PaidInput";
 export { default as SubmitButton } from "./SubmitButton";
 export { default as TitleInput } from "./TitleInput";
-export { default as PaymentMethod } from "./PaymentMethod";
+export { default as PaymentMethod } from "./PaymentMethod/PaymentMethod";

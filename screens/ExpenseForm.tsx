@@ -67,7 +67,7 @@ export default function ExpenseForm() {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [expenseHasBeenModified, setExpenseHasBeenModified] = useState(false);
   const [isToastActive, setIsToastActive] = useState(false);
-  const [paymentPickerOpen, setPaymentPickerOpen] = useState(false);
+  const [openPaymentMethodModal, setOpenPaymentMethodModal] = useState(false);
 
   const { addExpense, updateExpenses, deleteExpense } =
     useContext(ExpensesContext);
@@ -182,8 +182,8 @@ export default function ExpenseForm() {
               <DateTimeInput date={date} setDate={setDate} />
               {paymentMethod && (
                 <PaymentMethod
-                  open={paymentPickerOpen}
-                  setOpen={setPaymentPickerOpen}
+                  openOptionsModal={openPaymentMethodModal}
+                  setOpenOptionsModal={setOpenPaymentMethodModal}
                   value={paymentMethod}
                   setValue={setPaymentMethod}
                 />

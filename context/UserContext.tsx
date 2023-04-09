@@ -39,10 +39,10 @@ const defaultPaymentOptions = [
 
 export const UserContext = createContext<{
   paymentOptions: PaymentOption[];
-  favouritePaymentMethod: (updatedMethod: PaymentOption) => void;
+  setFavPaymentMethod: (updatedMethod: PaymentOption) => void;
 }>({
   paymentOptions: defaultPaymentOptions,
-  favouritePaymentMethod: () => {},
+  setFavPaymentMethod: () => {},
 });
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -52,7 +52,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     getPaymentMethods(setPaymentOptions);
   }, []);
 
-  function favouritePaymentMethod(updatedMethod: PaymentOption) {
+  function setFavPaymentMethod(updatedMethod: PaymentOption) {
     const updatedOptions = paymentOptions.map((prevMethod) =>
       prevMethod.value === updatedMethod.value ? updatedMethod : prevMethod
     );
@@ -73,7 +73,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <UserContext.Provider value={{ paymentOptions, favouritePaymentMethod }}>
+    <UserContext.Provider value={{ paymentOptions, setFavPaymentMethod }}>
       {children}
     </UserContext.Provider>
   );
