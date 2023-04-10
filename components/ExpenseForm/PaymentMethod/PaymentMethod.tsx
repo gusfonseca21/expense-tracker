@@ -34,18 +34,24 @@ export default function PaymentMethod({
     ) : null;
   }
   const optionsModalProps = {
-    openOptionsModal,
-    setOpenOptionsModal,
+    open: openOptionsModal,
+    setOpen: setOpenOptionsModal,
     paymentOptions,
     setValue,
     selectedValue,
     setSelectedValue,
+    setCreatePayMethodModalOpen: setOpenCreateOptionModal,
+  };
+
+  const createOptionModalProps = {
+    open: openCreateOptionModal,
+    setOpen: setOpenCreateOptionModal,
   };
 
   return (
     <View style={inputStyles.inputIconView}>
       <PaymentOptionsModal {...optionsModalProps} />
-      {/* <CreateNewOptionModal /> */}
+      <CreateNewOptionModal {...createOptionModalProps} />
       <Pressable onPress={() => setOpenOptionsModal(true)}>
         {renderSelectedOption()}
       </Pressable>

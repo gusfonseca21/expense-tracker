@@ -1,8 +1,26 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList, TextInput } from "react-native";
 import Modal from "react-native-modal";
-import { inputBorderBottomStyle } from "../../inputStyles";
+import {
+  inputBorderBottomStyle,
+  inputIconColor,
+  inputStyles,
+  placeholderTextColor,
+} from "../../inputStyles";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useState } from "react";
+import { modalStyles } from "./modalStyles";
 
-export default function CreateNewOptionModal() {
+type CreateNewOptionModalProps = {
+  open: boolean;
+  setOpen: (value: boolean) => void;
+};
+
+export default function CreateNewOptionModal({
+  open,
+  setOpen,
+}: CreateNewOptionModalProps) {
+  const [title, setTitle] = useState("");
+
   return (
     <Modal
       isVisible={open}
@@ -15,46 +33,29 @@ export default function CreateNewOptionModal() {
       animationOut='slideOutDown'
       backdropTransitionOutTiming={0}
     >
-      <View style={styles.flatListWrapper}>
-        <FlatList
-          data={paymentOptions}
-          renderItem={({ item }) => renderItemComponent(item)}
-          ListFooterComponent={() => (
-            <Pressable android_ripple={{ color: palette.grey.lighter }}>
-              <View style={[styles.itemView, { gap: 6 }]}>
-                <Ionicons name='add-circle-outline' size={22} />
-                <Text
-                  style={[
-                    inputStyles.textInputStyle,
-                    { textAlignVertical: "center" },
-                  ]}
-                >
-                  Adicionar forma de pagamento
-                </Text>
-              </View>
-            </Pressable>
-          )}
-        />
+      <View style={modalStyles.optionsRootView}>
+        <Text
+          style={[
+            inputStyles.textInputStyle,
+            { textAlignVertical: "center", paddingHorizontal: 10 },
+          ]}
+        >
+          Novo método de pagamento
+        </Text>
+        <View style={inputStyles.inputIconView}>
+          <Ionicons name='pencil-sharp' size={20} color={inputIconColor} />
+          <TextInput
+            style={inputStyles.textInputStyle}
+            placeholder='Título'
+            placeholderTextColor={placeholderTextColor}
+            onChangeText={setTitle}
+            value={title}
+            maxLength={20}
+          />
+        </View>
       </View>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
-  flatListWrapper: {
-    backgroundColor: "white",
-    width: "100%",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    overflow: "hidden",
-  },
-
-  itemView: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    ...inputBorderBottomStyle,
-  },
-});
+const styles = StyleSheet.create({});

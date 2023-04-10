@@ -1,34 +1,37 @@
-import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
+import { View, Text, FlatList, Pressable } from "react-native";
 import React from "react";
 import Modal from "react-native-modal";
 import { PaymentOption } from "../../../../utils/types";
 import { palette } from "../../../../utils/styles";
-import { inputBorderBottomStyle, inputStyles } from "../../inputStyles";
+import { inputStyles } from "../../inputStyles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import OptionIconText from "../OptionIconText";
+import { modalStyles } from "./modalStyles";
 
 type PaymentOptionsProps = {
-  openOptionsModal: boolean;
-  setOpenOptionsModal: (value: boolean) => void;
+  open: boolean;
+  setOpen: (value: boolean) => void;
   paymentOptions: PaymentOption[];
   setValue: (selectedOptionValue: string) => void;
   selectedValue: string | null;
   setSelectedValue: (selectedOptionValue: string) => void;
+  setCreatePayMethodModalOpen: (value: boolean) => void;
 };
 
 export default function PaymentOptionsModal({
-  openOptionsModal,
-  setOpenOptionsModal,
+  open,
+  setOpen,
   paymentOptions,
   setValue,
   selectedValue,
   setSelectedValue,
+  setCreatePayMethodModalOpen,
 }: PaymentOptionsProps) {
   function renderItemComponent(item: PaymentOption) {
     function onPressOptionHandler() {
       setSelectedValue(item.value);
       setValue(item.value);
-      setOpenOptionsModal(false);
+      setOpen(false);
     }
 
     return (
@@ -36,7 +39,7 @@ export default function PaymentOptionsModal({
         android_ripple={{ color: palette.grey.lighter }}
         onPress={onPressOptionHandler}
       >
-        <View style={styles.itemView}>
+        <View style={modalStyles.optionView}>
           <OptionIconText option={item} />
           <Ionicons
             name='checkmark-circle'
@@ -49,58 +52,46 @@ export default function PaymentOptionsModal({
     );
   }
 
+  function createPayMethodHandler() {
+    setOpen(false);
+    setCreatePayMethodModalOpen(true);
+  }
+
+  const createPayMethodComponent = (
+    <Pressable
+      onPress={createPayMethodHandler}
+      android_ripple={{ color: palette.grey.lighter }}
+    >
+      <View style={[modalStyles.optionView, { gap: 6 }]}>
+        <Ionicons name='add-circle-outline' size={22} />
+        <Text
+          style={[inputStyles.textInputStyle, { textAlignVertical: "center" }]}
+        >
+          Adicionar forma de pagamento
+        </Text>
+      </View>
+    </Pressable>
+  );
+
   return (
     <Modal
-      isVisible={openOptionsModal}
+      isVisible={open}
       scrollHorizontal={false}
-      onSwipeComplete={() => setOpenOptionsModal(false)}
+      onSwipeComplete={() => setOpen(false)}
       swipeDirection={["down"]}
       style={{ margin: 0, justifyContent: "flex-end" }}
-      onBackdropPress={() => setOpenOptionsModal(false)}
-      onBackButtonPress={() => setOpenOptionsModal(false)}
+      onBackdropPress={() => setOpen(false)}
+      onBackButtonPress={() => setOpen(false)}
       animationOut='slideOutDown'
       backdropTransitionOutTiming={0}
     >
-      <View style={styles.flatListWrapper}>
+      <View style={modalStyles.optionsRootView}>
         <FlatList
           data={paymentOptions}
           renderItem={({ item }) => renderItemComponent(item)}
-          ListFooterComponent={() => (
-            <Pressable android_ripple={{ color: palette.grey.lighter }}>
-              <View style={[styles.itemView, { gap: 6 }]}>
-                <Ionicons name='add-circle-outline' size={22} />
-                <Text
-                  style={[
-                    inputStyles.textInputStyle,
-                    { textAlignVertical: "center" },
-                  ]}
-                >
-                  Adicionar forma de pagamento
-                </Text>
-              </View>
-            </Pressable>
-          )}
+          ListFooterComponent={() => createPayMethodComponent}
         />
       </View>
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  flatListWrapper: {
-    backgroundColor: "white",
-    width: "100%",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    overflow: "hidden",
-  },
-
-  itemView: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    ...inputBorderBottomStyle,
-  },
-});
