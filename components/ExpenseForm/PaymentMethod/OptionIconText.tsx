@@ -40,10 +40,10 @@ export default function OptionIconText({
         <View>
           <BouncyCheckbox
             size={32}
-            fillColor={palette.secondary.main}
+            fillColor='#fff'
             isChecked={option.isFavourite}
             unfillColor='#fff'
-            innerIconStyle={{ borderWidth: 1 }}
+            innerIconStyle={{ borderWidth: 0 }}
             onPress={() => pressCheckboxHandler(option)}
             disableBuiltInState
             disableText

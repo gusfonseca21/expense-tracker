@@ -5,10 +5,10 @@ import {
   saveFavouritePaymentMethod,
 } from "../utils/Async Storage Functions/submitPaymentMethods";
 
-const logoPix = require("../assets/icons/logo-pix.png");
-const logoDinheiro = require("../assets/icons/logo-dinheiro.png");
-const logoDebito = require("../assets/icons/logo-debito.png");
-const logoCredito = require("../assets/icons/logo-credito.png");
+const logoPix = require("../assets/icons/payment-method/logo-pix.png");
+const logoDinheiro = require("../assets/icons/payment-method/logo-dinheiro.png");
+const logoDebito = require("../assets/icons/payment-method/logo-debito.png");
+const logoCredito = require("../assets/icons/payment-method/logo-credito.png");
 
 const defaultPaymentOptions = [
   {
