@@ -6,7 +6,7 @@ import {
   Pressable,
 } from "react-native";
 import React from "react";
-import { inputBorderBottomStyle } from "./inputStyles";
+import { inputBorderBottomStyle } from "./Inputs/inputStyles";
 import { palette } from "../../utils/styles";
 
 type DeleteExpenseButtonProps = {

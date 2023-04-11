@@ -1,6 +1,6 @@
 import { View, Pressable } from "react-native";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
-import { inputStyles } from "../inputStyles";
+import { inputStyles } from "../Inputs/inputStyles";
 import { UserContext } from "../../../context/UserContext";
 import PaymentOptionsModal from "./modals/PaymentOptionsModal";
 import OptionIconText from "./OptionIconText";

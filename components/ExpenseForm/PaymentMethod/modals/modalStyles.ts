@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { inputBorderBottomStyle } from "../../inputStyles";
+import { inputBorderBottomStyle } from "../../Inputs/inputStyles";
 
 export const modalStyles = StyleSheet.create({
   optionsRootView: {

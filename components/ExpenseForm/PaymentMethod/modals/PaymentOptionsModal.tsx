@@ -1,12 +1,12 @@
 import { View, Text, FlatList, Pressable } from "react-native";
 import React from "react";
-import Modal from "react-native-modal";
 import { PaymentOption } from "../../../../utils/types";
 import { palette } from "../../../../utils/styles";
-import { inputStyles } from "../../inputStyles";
+import { inputStyles } from "../../Inputs/inputStyles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import OptionIconText from "../OptionIconText";
 import { modalStyles } from "./modalStyles";
+import Modal from "../../../Modal";
 
 type PaymentOptionsProps = {
   open: boolean;
@@ -74,17 +74,7 @@ export default function PaymentOptionsModal({
   );
 
   return (
-    <Modal
-      isVisible={open}
-      scrollHorizontal={false}
-      onSwipeComplete={() => setOpen(false)}
-      swipeDirection={["down"]}
-      style={{ margin: 0, justifyContent: "flex-end" }}
-      onBackdropPress={() => setOpen(false)}
-      onBackButtonPress={() => setOpen(false)}
-      animationOut='slideOutDown'
-      backdropTransitionOutTiming={0}
-    >
+    <Modal open={open} setOpen={setOpen}>
       <View style={modalStyles.optionsRootView}>
         <FlatList
           data={paymentOptions}

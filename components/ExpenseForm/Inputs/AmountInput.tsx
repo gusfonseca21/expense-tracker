@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import CurrencyInput from "react-native-currency-input";
-import { Expense } from "../../utils/types";
+import { Expense } from "../../../utils/types";
 
 const valueTextColor = "#fff";
 

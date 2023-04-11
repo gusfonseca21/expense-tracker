@@ -1,6 +1,6 @@
 import { View, Text, Switch, Pressable } from "react-native";
 import React from "react";
-import { palette } from "../../utils/styles";
+import { palette } from "../../../utils/styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { inputStyles, inputText } from "./inputStyles";
 

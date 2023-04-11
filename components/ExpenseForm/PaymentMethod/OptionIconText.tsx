@@ -1,7 +1,7 @@
 import { View, Text, Image, StyleSheet } from "react-native";
 import React, { useContext } from "react";
 import { PaymentOption } from "../../../utils/types";
-import { inputStyles } from "../inputStyles";
+import { inputStyles } from "../Inputs/inputStyles";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { palette } from "../../../utils/styles";
 import { UserContext } from "../../../context/UserContext";

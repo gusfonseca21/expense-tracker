@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { palette } from "../../utils/styles";
+import { palette } from "../../../utils/styles";
 
 const inputHeight = 65;
 
