@@ -1,18 +1,23 @@
 import { View, Text, Image } from "react-native";
-import React from "react";
+import React, { ReactNode } from "react";
 import Modal from "../../../Modal";
 import { modalStyles } from "./modalStyles";
 import { inputBorderBottomStyle, inputStyles } from "../../Inputs/inputStyles";
 import { allIcons } from "./allIcons";
+import SelectableIcon from "./SelectableIcon";
 
 type SelectIconModalProps = {
   iconsModalOpen: boolean;
   setIconsModalOpen: (value: boolean) => void;
+  selectedIcon: number;
+  setSelectedIcon: (icon: number) => void;
 };
 
 export default function SelectIconModal({
   iconsModalOpen,
   setIconsModalOpen,
+  selectedIcon,
+  setSelectedIcon,
 }: SelectIconModalProps) {
   return (
     <Modal
@@ -25,10 +30,11 @@ export default function SelectIconModal({
           modalStyles.optionsRootView,
           {
             paddingHorizontal: 20,
-            flexWrap: "wrap",
-            flexDirection: "row",
-            gap: 12,
             paddingBottom: 15,
+            width: "100%",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center",
           },
         ]}
       >
@@ -39,13 +45,28 @@ export default function SelectIconModal({
               textAlignVertical: "center",
               ...inputBorderBottomStyle,
               textAlign: "center",
+              width: "100%",
             },
           ]}
         >
           Selecione um ícone
         </Text>
-        {allIcons.map((icon) => (
-          <Image key={icon} source={icon} style={{ height: 40, width: 40 }} />
+        {allIcons.map((icon, index) => (
+          <View
+            key={icon}
+            style={{
+              width: "25%",
+              padding: 5,
+              alignItems: "center",
+            }}
+          >
+            <SelectableIcon
+              iconSource={icon}
+              selectedIcon={selectedIcon}
+              setSelectedIcon={setSelectedIcon}
+              setOpenSelectIconModal={setIconsModalOpen}
+            />
+          </View>
         ))}
       </View>
     </Modal>

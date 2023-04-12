@@ -2,8 +2,9 @@ import React, { createContext, useEffect, useState } from "react";
 import { PaymentOption } from "../utils/types";
 import {
   getPaymentMethods,
-  saveFavouritePaymentMethod,
-} from "../utils/Async Storage Functions/submitPaymentMethods";
+  savePaymentOptions,
+} from "../utils/async-storage-function/submitPaymentMethods";
+import { clearAllExpenses } from "../utils/helpers";
 
 const logoPix = require("../assets/icons/payment-method/logo-pix.png");
 const logoDinheiro = require("../assets/icons/payment-method/logo-dinheiro.png");
@@ -37,19 +38,23 @@ const defaultPaymentOptions = [
   },
 ];
 
+console.log("CONTINUAR EM USERCONTEXT");
+
 export const UserContext = createContext<{
   paymentOptions: PaymentOption[];
   setFavPaymentMethod: (updatedMethod: PaymentOption) => void;
+  addPaymentOption: (newPaymentOption: PaymentOption) => void;
 }>({
   paymentOptions: defaultPaymentOptions,
   setFavPaymentMethod: () => {},
+  addPaymentOption: () => {},
 });
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [paymentOptions, setPaymentOptions] = useState(defaultPaymentOptions);
 
   useEffect(() => {
-    getPaymentMethods(setPaymentOptions);
+    console.log();
   }, []);
 
   function setFavPaymentMethod(updatedMethod: PaymentOption) {
@@ -68,12 +73,18 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
 
-    saveFavouritePaymentMethod(updatedOptions);
+    savePaymentOptions(updatedOptions);
     setPaymentOptions(updatedOptions);
   }
 
+  function addPaymentOption(newPaymentMethod: PaymentOption) {
+    setPaymentOptions((prevState) => [...prevState, newPaymentMethod]);
+  }
+
   return (
-    <UserContext.Provider value={{ paymentOptions, setFavPaymentMethod }}>
+    <UserContext.Provider
+      value={{ paymentOptions, setFavPaymentMethod, addPaymentOption }}
+    >
       {children}
     </UserContext.Provider>
   );

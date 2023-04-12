@@ -3,7 +3,7 @@ import { Expense } from "../utils/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { callToast } from "../utils/helpers";
 import { EXPENSES_STORAGE } from "../utils/database";
-import { getExpenses } from "../utils/Async Storage Functions/submitExpenses";
+import { getExpenses } from "../utils/async-storage-function/submitExpenses";
 
 export const ExpensesContext = createContext<{
   expenses: Expense[];

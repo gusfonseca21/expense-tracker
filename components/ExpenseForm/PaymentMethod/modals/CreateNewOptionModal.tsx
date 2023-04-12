@@ -14,63 +14,64 @@ import {
   placeholderTextColor,
 } from "../../Inputs/inputStyles";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { modalStyles } from "./modalStyles";
 import { palette, shadow } from "../../../../utils/styles";
 import { allIcons } from "./allIcons";
 import Modal from "../../../Modal";
 import SelectIconModal from "./SelectIconModal";
-
-const iconSize = {
-  height: 24,
-  width: 24,
-};
+import SelectableIcon from "./SelectableIcon";
+import { callToast } from "../../../../utils/helpers";
+import { UserContext } from "../../../../context/UserContext";
+import { PaymentOption } from "../../../../utils/types";
 
 type CreateNewOptionModalProps = {
   open: boolean;
   setOpen: (value: boolean) => void;
 };
 
-type IconToSelectProps = {
-  iconSource: number;
-  isSelected: boolean;
-  position: number;
-  onPress: (position: number) => void;
-};
-
-function IconToSelect({
-  iconSource,
-  isSelected,
-  position,
-  onPress,
-}: IconToSelectProps) {
-  return (
-    <Pressable
-      onPress={() => onPress(position)}
-      style={{
-        height: 35,
-        width: 35,
-        backgroundColor: isSelected ? palette.primary.lighter : "transparent",
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 50,
-      }}
-    >
-      <Image source={iconSource} style={iconSize} />
-    </Pressable>
-  );
-}
+const firstIcon = allIcons[0];
 
 export default function CreateNewOptionModal({
   open,
   setOpen,
 }: CreateNewOptionModalProps) {
   const [title, setTitle] = useState("");
-  const [selectedIcon, setSelectedIcon] = useState(1);
+  const [selectedIcon, setSelectedIcon] = useState(firstIcon);
   const [iconsModalOpen, setIconsModalOpen] = useState(false);
+  const [firstRenderedIcon, setFirstRenderedIcon] = useState(firstIcon);
 
-  function selectIconHandler(position: number) {
-    setSelectedIcon(position);
+  const { addPaymentOption, paymentOptions } = useContext(UserContext);
+
+  console.log(paymentOptions);
+
+  useEffect(() => {
+    if (!open) setFirstRenderedIcon(firstIcon);
+  }, [open]);
+
+  useEffect(() => {
+    if (
+      selectedIcon !== allIcons[0] &&
+      selectedIcon !== allIcons[1] &&
+      selectedIcon !== allIcons[2]
+    ) {
+      setFirstRenderedIcon(selectedIcon);
+    }
+  }, [selectedIcon]);
+
+  function addPayMethodHandler() {
+    if (title.trim() === "") {
+      callToast("É preciso definir um Título", 4);
+      return;
+    }
+    const newPayMethod: PaymentOption = {
+      label: title,
+      value: title.trim().toLowerCase(),
+      logo: selectedIcon,
+      isFavourite: false,
+    };
+
+    addPaymentOption(newPayMethod);
   }
 
   return (
@@ -78,6 +79,8 @@ export default function CreateNewOptionModal({
       <SelectIconModal
         iconsModalOpen={iconsModalOpen}
         setIconsModalOpen={setIconsModalOpen}
+        selectedIcon={selectedIcon}
+        setSelectedIcon={setSelectedIcon}
       />
       <Modal open={open} setOpen={setOpen}>
         <View style={[modalStyles.optionsRootView, { paddingHorizontal: 20 }]}>
@@ -105,47 +108,72 @@ export default function CreateNewOptionModal({
             />
           </View>
           <View style={[inputStyles.inputIconView, { width: "100%" }]}>
-            <Ionicons name='image-outline' size={20} color={inputIconColor} />
             <View
               style={{
                 flexDirection: "row",
                 flex: 1,
                 alignItems: "center",
-                gap: 35,
+                gap: 30,
               }}
             >
-              <View>
-                <Text
-                  style={[
-                    inputStyles.textInputStyle,
-                    {
-                      color: placeholderTextColor,
-                      textAlignVertical: "center",
-                    },
-                  ]}
-                >
-                  Ícone
-                </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 15,
+                  width: "30%",
+                }}
+              >
+                <Ionicons
+                  name='image-outline'
+                  size={20}
+                  color={inputIconColor}
+                />
+                <View>
+                  <Text
+                    style={[
+                      inputStyles.textInputStyle,
+                      {
+                        color: placeholderTextColor,
+                        textAlignVertical: "center",
+                      },
+                    ]}
+                  >
+                    Ícone
+                  </Text>
+                </View>
               </View>
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <IconToSelect
-                  position={1}
-                  iconSource={allIcons[0]}
-                  isSelected={selectedIcon === 1}
-                  onPress={selectIconHandler}
-                />
-                <IconToSelect
-                  position={2}
-                  iconSource={allIcons[1]}
-                  isSelected={selectedIcon === 2}
-                  onPress={selectIconHandler}
-                />
-                <IconToSelect
-                  position={3}
-                  iconSource={allIcons[2]}
-                  isSelected={selectedIcon === 3}
-                  onPress={selectIconHandler}
-                />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "60%",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 5,
+                    width: 125,
+                  }}
+                >
+                  <SelectableIcon
+                    iconSource={firstRenderedIcon}
+                    selectedIcon={selectedIcon}
+                    setSelectedIcon={setSelectedIcon}
+                  />
+                  <SelectableIcon
+                    iconSource={allIcons[1]}
+                    selectedIcon={selectedIcon}
+                    setSelectedIcon={setSelectedIcon}
+                  />
+                  <SelectableIcon
+                    iconSource={allIcons[2]}
+                    selectedIcon={selectedIcon}
+                    setSelectedIcon={setSelectedIcon}
+                  />
+                </View>
                 <View
                   style={{
                     height: 35,
@@ -191,7 +219,10 @@ export default function CreateNewOptionModal({
                 overflow: "hidden",
               }}
             >
-              <Pressable android_ripple={{ color: palette.primary.lighter }}>
+              <Pressable
+                onPress={() => setOpen(false)}
+                android_ripple={{ color: palette.primary.lighter }}
+              >
                 <Text
                   style={{
                     fontSize: 22,
@@ -214,7 +245,7 @@ export default function CreateNewOptionModal({
                 ...shadow,
               }}
             >
-              <TouchableOpacity>
+              <TouchableOpacity onPress={addPayMethodHandler}>
                 <Text
                   style={{
                     fontSize: 22,

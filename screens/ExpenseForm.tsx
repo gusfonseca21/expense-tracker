@@ -15,7 +15,7 @@ import {
   confirmDeleteExpenseAlert,
   editExpense,
   postExpense,
-} from "../utils/Async Storage Functions/submitExpenses";
+} from "../utils/async-storage-function/submitExpenses";
 
 import {
   AmountInput,
