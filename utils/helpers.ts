@@ -3,7 +3,7 @@ import { groupBy } from "lodash";
 import { Expense, FilterFunctions } from "./types";
 import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { EXPENSES_STORAGE } from "./database";
+import { EXPENSES_STORAGE, PAYMENT_METHODS_STORAGE } from "./database";
 
 export function groupExpenses(
   expenses: Expense[],
@@ -86,6 +86,10 @@ export function parseAsyncData(jsonData: string) {
 
 export async function clearAllExpenses() {
   await AsyncStorage.removeItem(EXPENSES_STORAGE);
+}
+
+export async function clearPaymentMethods() {
+  await AsyncStorage.removeItem(PAYMENT_METHODS_STORAGE);
 }
 
 export async function clearNullAsyncStorage() {

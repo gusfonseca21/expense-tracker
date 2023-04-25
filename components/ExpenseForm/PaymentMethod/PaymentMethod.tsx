@@ -46,6 +46,7 @@ export default function PaymentMethod({
   const createOptionModalProps = {
     open: openCreateOptionModal,
     setOpen: setOpenCreateOptionModal,
+    selectCreatedMethod: setValue,
   };
 
   return (

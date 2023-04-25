@@ -24,10 +24,15 @@ import SelectableIcon from "./SelectableIcon";
 import { callToast } from "../../../../utils/helpers";
 import { UserContext } from "../../../../context/UserContext";
 import { PaymentOption } from "../../../../utils/types";
+import {
+  saveNewPaymentOptions,
+  savePaymentOptions,
+} from "../../../../utils/async-storage-function/submitPaymentMethods";
 
 type CreateNewOptionModalProps = {
   open: boolean;
   setOpen: (value: boolean) => void;
+  selectCreatedMethod: (paymentMethod: string) => void;
 };
 
 const firstIcon = allIcons[0];
@@ -35,6 +40,7 @@ const firstIcon = allIcons[0];
 export default function CreateNewOptionModal({
   open,
   setOpen,
+  selectCreatedMethod,
 }: CreateNewOptionModalProps) {
   const [title, setTitle] = useState("");
   const [selectedIcon, setSelectedIcon] = useState(firstIcon);
@@ -42,8 +48,6 @@ export default function CreateNewOptionModal({
   const [firstRenderedIcon, setFirstRenderedIcon] = useState(firstIcon);
 
   const { addPaymentOption, paymentOptions } = useContext(UserContext);
-
-  console.log(paymentOptions);
 
   useEffect(() => {
     if (!open) setFirstRenderedIcon(firstIcon);
@@ -72,6 +76,8 @@ export default function CreateNewOptionModal({
     };
 
     addPaymentOption(newPayMethod);
+    saveNewPaymentOptions(newPayMethod, paymentOptions, setOpen);
+    selectCreatedMethod(newPayMethod.value);
   }
 
   return (

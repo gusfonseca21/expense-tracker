@@ -49,7 +49,7 @@ export default function ExpenseList({
 
     return (
       <Image
-        source={selectedMethod.logo}
+        source={selectedMethod?.logo}
         style={{ height: iconSize, width: iconSize }}
       />
     );
